@@ -6,13 +6,13 @@ have them auto DJ'd for parties via voting and song requests
 ### Homestead installation instructions
 1. Clone project to `Homestead/Projects` folder
 2. Update `Homestead.yaml` to map the bagpipe project.
-   Eg.
+   Eg:
 ```
 - map: bagpipe.dev
   to: /home/vagrant/Sites/bagpipe/public
 ```
 3. Modify hostfile to map to bagpipe.dev
-   Eg.
+   Eg:
 ```
 127.0.0.1 bagpipe.dev
 ```
@@ -22,4 +22,20 @@ have them auto DJ'd for parties via voting and song requests
 7. Change directory (cd) to `Sites/bagpipe`
 8. Run `composer dumpautoload`
 9. Run `sudo composer update`
-10. Visit bagpipe.dev/ and the project should load.
+10. Create `.env.local.php` file in your project root to setup local env settings.
+    Eg:
+```
+<?php
+
+return array(
+
+    'DB_HOST'       => 'localhost',
+    'DB_USERNAME'   => 'homestead',
+    'DB_NAME'       => 'epipgab',
+    'DB_PASSWORD'   => 'secret',
+
+);
+```
+11. Visit bagpipe.dev/ and the project should load.
+
+
