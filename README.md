@@ -1,3 +1,8 @@
+##Bagpipe
+
+Bagpipe is a PHP website built on the Laravel framework designed to allow users to request songs from youtube and
+have them auto DJ'd for parties via voting and song requests
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
