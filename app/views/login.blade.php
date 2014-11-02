@@ -30,7 +30,7 @@
 
       <form class="form-signin" role="form" action="/" method="POST">
         <h2 class="form-signin-heading">Login</h2>
-        <input type="email" class="form-control" name="email" placeholder="Email address" required autofocus>
+        <input type="email" class="form-control" name="email" value="{{Input::old('email')}}" placeholder="Email address" required autofocus>
         <input type="password" class="form-control" name="password" placeholder="Password" required>
         <div class="checkbox">
           <label>
@@ -38,8 +38,8 @@
           </label>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        {{$errors->first('email')}}
-        {{$errors->first('password')}}
+        <span style="color:darkred">{{"<br>" . $errors->first('email') . $errors->first('password') }}</span>
+        <span style="color:darkred">@if(Session::has('message')){{Session::get('message')}}@endif</span>
       </form>
 
     </div> <!-- /container -->
