@@ -11,7 +11,15 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+Route::any('/',array (
+    'as' => 'login',
+    'uses' => 'LoginController@login'
+));
+Route::any('/dashboard', array (
+    'as' => 'dashboard',
+    'uses' => 'HomeController@dashboard'
+));
+Route::get('/logout', array (
+    'as' => 'logout',
+    'uses' => 'LoginController@logout'
+));
