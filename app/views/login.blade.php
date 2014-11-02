@@ -28,21 +28,48 @@
   <body>
     <div class="container">
 
-      <form class="form-signin" role="form" action="/" method="POST">
-        <h2 class="form-signin-heading">Login</h2>
-        <input type="email" class="form-control" name="email" value="{{Input::old('email')}}" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" name="password" placeholder="Password" required>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#login" role="tab" data-toggle="tab" id="tab">Login</a></li>
+            <li role="presentation"><a href="#create_account" role="tab" data-toggle="tab" id="tab">Create Account</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="login">
+
+                <form class="form-signin" role="form" action="/" method="POST">
+                    <h2 class="form-signin-heading">Login</h2>
+                    <input type="email" class="form-control" name="email" value="{{Input::old('email')}}" placeholder="Email address" required autofocus>
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Remember me
+                        </label>
+                    </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <span style="color:darkred">{{"<br>" . $errors->first('email') . $errors->first('password') }}</span>
+                <span style="color:darkred">@if(Session::has('message')){{Session::get('message')}}@endif</span>
+                </form>
+
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="create_account">
+                Create an Account Here...
+            </div>
+
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <span style="color:darkred">{{"<br>" . $errors->first('email') . $errors->first('password') }}</span>
-        <span style="color:darkred">@if(Session::has('message')){{Session::get('message')}}@endif</span>
-      </form>
+
+
+
+
+
+
+
 
     </div> <!-- /container -->
+    <script src="js/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
   </body>
 </html>
 
