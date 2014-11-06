@@ -11,7 +11,14 @@
 |
 */
 
-Route::any('/',array (
+#Registration
+Route::get('/register', [
+    'as' => 'register',
+    'uses' => 'RegistrationController@create'
+]);
+
+#Session
+Route::any('/login',array (
     'as' => 'login',
     'uses' => 'LoginController@login'
 ));
@@ -19,6 +26,28 @@ Route::any('/dashboard', array (
     'as' => 'dashboard',
     'uses' => 'HomeController@dashboard'
 ));
+
+
+#Pages
+Route::get('/', [
+    'as' => 'home',
+    'uses' => 'HomeController@create'
+]);
+Route::get('/about', [
+    'as' => 'about',
+    'uses' => 'HomeController@about'
+]);
+
+Route::get('/guest', [
+    'as' => 'guest',
+    'uses' => 'HomeController@guest'
+]);
+
+Route::get('/host', [
+    'as' => 'host',
+    'uses' => 'HomeController@host'
+]);
+
 Route::get('/logout', array (
     'as' => 'logout',
     'uses' => 'LoginController@logout'

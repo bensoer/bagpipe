@@ -15,6 +15,26 @@ class HomeController extends BaseController {
 	|
 	*/
 
+    public function create()
+    {
+        return View::make('pages.index');
+    }
+
+    public function guest()
+    {
+        return View::make('party.guest');
+    }
+
+    public function host()
+    {
+        return View::make('party.host');
+    }
+
+    public function about()
+    {
+        return View::make('pages.about');
+    }
+
 	public function showWelcome()
 	{
 		return View::make('hello');
