@@ -3,6 +3,13 @@
 Bagpipe is a PHP website built on the Laravel framework designed to allow users to request songs from youtube and
 have them auto DJ'd for parties via voting and song requests
 
+
+## APIs
+* [Madcoda PHP Youtube API](https://github.com/madcoda/php-youtube-api)
+* [Youtube Data API v3](https://developers.google.com/youtube/v3/)
+* [Obtain Google API Key](http://code.google.com/apis/console)
+
+
 ### Homestead installation instructions
 1. Clone project to `Homestead/Projects` folder
 2. Update `Homestead.yaml` to map the bagpipe project.
