@@ -13,9 +13,9 @@
 
 
 #Registration
-Route::get('/register', [
+Route::any('/register', [
     'as' => 'register',
-    'uses' => 'RegistrationController@create'
+    'uses' => 'RegistrationController@register'
 ]);
 
 

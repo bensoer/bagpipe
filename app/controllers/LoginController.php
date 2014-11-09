@@ -32,7 +32,7 @@ class LoginController extends BaseController {
                     ->withErrors($validator);
             }
         }else{
-            return View::make('login');
+            return View::make('pages.login');
         }
 
     }
