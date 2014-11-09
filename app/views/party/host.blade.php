@@ -16,14 +16,14 @@
                 {{ Form::open(['role' => 'form']) }}
 
                     <div class="form-group">
-                        <div class="col-xs-2 col-lg-offset-5">
+                        <div class="col-xs-4 col-lg-offset-4">
                             {{ Form::text('search', NULL, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Enter name of song', 'aria-title' => 'Search'], 'autofocus') }}
                             {{ $errors->first('search', '<span class="error">:message</span>'); }}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-xs-2 col-lg-offset-5">
+                        <div class="col-xs-4 col-lg-offset-4">
                             {{ Form::submit('Search', ['class' => 'form-control']) }}
                         </div>
                     </div>

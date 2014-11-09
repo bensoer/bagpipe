@@ -17,6 +17,10 @@ Route::any('/register', [
     'as' => 'register',
     'uses' => 'RegistrationController@register'
 ]);
+Route::any('/register/confirm/{confirmationCode}', array (
+    'as' => 'confirm',
+    'uses' => 'RegistrationController@confirm'
+));
 
 
 #Session

@@ -73,7 +73,7 @@
                     <br>
                     <ul class="list-inline">
                         <li>
-                            <a href="#"><i class="fa fa-github fa-fw fa-3x"></i></a>
+                            <a href="https://github.com/bensoer/bagpipe"><i class="fa fa-github fa-fw fa-3x"></i></a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-twitter fa-fw fa-3x"></i></a>
@@ -84,6 +84,7 @@
                     </ul>
                     <hr class="small">
                     <p class="text-muted">Copyright &copy; Bagpipe 2014</p>
+                    <p> Created By <a href="http://ryan.sadio.ca">Ryan Sadio</a> & <a href="http://bensoer.com">Ben Soer</a></p>
                 </div>
             </div>
         </div>

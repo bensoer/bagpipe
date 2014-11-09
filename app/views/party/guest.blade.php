@@ -15,14 +15,14 @@
                 {{ Form::open(['role' => 'form']) }}
 
                     <div class="form-group">
-                        <div class="col-xs-2 col-lg-offset-5">
+                        <div class="col-xs-4 col-lg-offset-4">
                             {{ Form::text('code', NULL, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Enter code here', 'aria-title' => 'Code'], 'autofocus') }}
                             {{ $errors->first('code', '<span class="error">:message</span>'); }}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-xs-2 col-lg-offset-5">
+                        <div class="col-xs-4 col-lg-offset-4">
                             {{ Form::submit('Join!', ['class' => 'form-control']) }}
                         </div>
                     </div>

@@ -24,7 +24,7 @@ class LoginController extends BaseController {
                     //return $this->generateError();
                     return Redirect::back()
                         ->withInput()
-                        ->with('message','Credentials are Incorrect');
+                        ->with('error','Credentials are Incorrect');
                 }
             } else {
                 return Redirect::back()
