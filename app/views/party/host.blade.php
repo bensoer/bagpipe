@@ -13,7 +13,7 @@
             Invite your crowd: <code>AX99B</code></p>
 
             <div class="col-lg-12 center-block">
-                {{ Form::open(['role' => 'form']) }}
+                {{ Form::open(['role' => 'form', 'action' => 'YoutubeController@search']) }}
 
                     <div class="form-group">
                         <div class="col-xs-4 col-lg-offset-4">

@@ -55,8 +55,14 @@ Route::get('/host', [
     'as' => 'host',
     'uses' => 'HomeController@host'
 ]);
+
+
 Route::get('/test', [
     'as' => 'test',
     'uses' => 'YoutubeController@index'
+]);
+Route::any('/wut', [
+    'as' => 'search' ,
+    'uses' => 'YoutubeController@search'
 ]);
 
