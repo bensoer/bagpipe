@@ -81,27 +81,29 @@
         <div id="contact" class="container">
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 text-center">
-                    <h4><strong>Bagpipe</strong></h4>
-                    <p>PHP Project<br>British Columbia Institute of Technology</p>
-                    <ul class="list-unstyled">
-                        <li><i class="fa fa-envelope-o fa-fw"></i>  <a href="mailto:bagpiper@bagpipe.rocks">bagpiper@bagpipe.rocks</a>
-                        </li>
-                    </ul>
-                    <br>
+                    <a href="/"> <h4><strong>Bagpipe</strong></h4></a>
+                    <br />
                     <ul class="list-inline">
                         <li>
-                            <a href="https://github.com/bensoer/bagpipe"><i class="fa fa-github fa-fw fa-3x"></i></a>
+                            <a target="_blank" href="https://github.com/bensoer/bagpipe"><i class="fa fa-github fa-fw fa-3x"></i></a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-twitter fa-fw fa-3x"></i></a>
+                            <a target="_blank" href="https://twitter.com/hashtag/bcitbagpipe"><i class="fa fa-twitter fa-fw fa-3x"></i></a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-youtube fa-fw fa-3x"></i></a>
                         </li>
                     </ul>
                     <hr class="small">
+                    <ul class="list-unstyled">
+                        <li><i class="glyphicon glyphicon-send" aria-hidden="true"></i>&nbsp;
+                            Created by
+                            <a target="_blank" href="http://www.bensoer.com/">Ben</a>
+                            and
+                            <a target="_blank" href="https://www.ryansadio.com/">Ryan</a>
+                        </li>
+                    </ul>
                     <p class="text-muted">Copyright &copy; Bagpipe 2014</p>
-                    <p> Created By <a href="http://ryan.sadio.ca">Ryan Sadio</a> & <a href="http://bensoer.com">Ben Soer</a></p>
                 </div>
             </div>
         </div>
