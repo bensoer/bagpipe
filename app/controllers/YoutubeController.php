@@ -10,7 +10,7 @@ class YoutubeController extends BaseController {
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
 
         $vID = 'rie-hPVJ7Sw';
-        var_dump( $this->youtube->getVideoInfo($vID) );
+        var_dump( $this->youtube->getVideoInfo($vID)->snippet->title );
     }
 
     public function search(){
@@ -35,5 +35,19 @@ class YoutubeController extends BaseController {
 
 
     }
+
+    public function playlist(){
+        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
+
+        $videoIDs = array("H_HUasB6DPQ","7hHX3tCti74", "Ou1fTw7iMjA");
+        $videoNames = array();
+        foreach($videoIDs as $id){
+            $videoNames[] =  $this->youtube->getVideoInfo($id)->snippet->title;
+
+        }
+
+        return View::make('party.playlist')->with("videoData", array("videoIDs" => $videoIDs, "videoNames" => $videoNames));
+    }
+
 
 }

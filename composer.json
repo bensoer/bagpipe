@@ -6,7 +6,8 @@
 	"require": {
 		"laravel/framework": "4.2.*",
         "madcoda/php-youtube-api" : "dev-master",
-        "phpunit/phpunit": "4.0.*"
+        "phpunit/phpunit": "4.0.*",
+        "google/apiclient": "1.0.*@beta"
 	},
 	"autoload": {
 		"classmap": [
