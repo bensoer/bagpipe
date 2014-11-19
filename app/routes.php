@@ -65,4 +65,8 @@ Route::any('/wut', [
     'as' => 'search' ,
     'uses' => 'YoutubeController@search'
 ]);
+Route::any('/playlist', [
+    'as' => 'playlist',
+    'uses' => 'YoutubeController@playlist'
+]);
 
