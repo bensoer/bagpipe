@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('meta-title', 'Login')
+@section('meta-title', 'Playlist')
 @stop
 
 @section('content')
@@ -14,6 +14,7 @@
                      <div class="form-group">
 
                             <h1>Now Playing</h1>
+                            <p id="label"></p></p>
                             <div id="player"></div>
 
                      </div>
@@ -27,7 +28,7 @@
                              <div class="form-group">
 
                                     <h1>Up Next</h1>
-                                    <div id="next" onLoad="getSongs()"></div>
+                                    <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
 
 
                              </div>
@@ -37,8 +38,10 @@
     </div>
 
     <script>
-
+        <?php $videoIDs = $videoData['videoIDs'];
+        $videoNames = $videoData['videoNames']; ?>
         var videoIDs = Array(<?php for($i=0;$i< count($videoIDs);++$i){ if($i == count($videoIDs)-1){ echo '"'.$videoIDs[$i].'"';}else{ echo '"'.$videoIDs[$i].'"'.",";}}?>);
+        var videoNames = Array(<?php for($i=0;$i< count($videoNames);++$i){ if($i == count($videoNames)-1){ echo '"'.$videoNames[$i].'"';}else{ echo '"'.$videoNames[$i].'"'.",";}}?>);
        var soFarPlayed = 0;
       // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement('script');
@@ -46,6 +49,8 @@
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      getSongs();
 
       // 3. This function creates an <iframe> (and YouTube player)
       //    after the API code downloads.
@@ -103,6 +108,8 @@
         if(soFarPlayed > videoIDs.length){
             return null;
         }else{
+            document.getElementById("label").innerHTML = videoNames[soFarPlayed];
+            getSongs();
             return videoIDs[soFarPlayed++];
         }
 
@@ -111,6 +118,26 @@
       function getSongs(){
         //make ajax call back with list to return song data belonging to the videos
 
+
+
+
+        //var list = document.body.appendChild(document.getElementById("list"));
+        var list = document.getElementById('list');
+        list.innerHTML = '';
+
+
+        for (var i=soFarPlayed+1; i < videoNames.length; i++){
+
+            var node=document.createElement("li");
+            var textnode=document.createTextNode(videoNames[i]);
+            node.appendChild(textnode);
+            document.getElementById("list").appendChild(node);
+
+
+           // li.innerHTML=li.innerHTML + videoNames[i];
+             //list.appendChild(li);
+
+        }
 
       }
 

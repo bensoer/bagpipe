@@ -42,10 +42,11 @@ class YoutubeController extends BaseController {
         $videoIDs = array("H_HUasB6DPQ","7hHX3tCti74", "Ou1fTw7iMjA");
         $videoNames = array();
         foreach($videoIDs as $id){
-            echo $this->youtube->getVideoInfo($id)->snippet->title;
+            $videoNames[] =  $this->youtube->getVideoInfo($id)->snippet->title;
+
         }
 
-        return View::make('party.playlist')->with("videoIDs", $videoIDs);
+        return View::make('party.playlist')->with("videoData", array("videoIDs" => $videoIDs, "videoNames" => $videoNames));
     }
 
 
