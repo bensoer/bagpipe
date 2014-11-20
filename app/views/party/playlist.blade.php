@@ -25,7 +25,7 @@
         <div class="row">
                     <div class="col-lg-12 text-center">
                         <div class="col-lg-12 center-block">
-                             <div class="form-group">
+                             <div class="form-group" style="border: 2px solid black;text-align:center">
                                   <div >
                                         <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
 
@@ -37,31 +37,41 @@
 
                                   <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
 
+                                  <div class="row">
+                                      <div class="col-md-4 col-md-offset-4" style="border: 2px solid red;">
+
+
+                                             <form class="form-signin" role="form"  method="POST" id="searchSong">
+                                                 <h2 class="form-signin-heading">Add To The List</h2>
+                                                 <div>
+                                                    <input type="text" class="form-control" name="search" id="search" required autofocus>
+
+                                                    <button class="btn btn-lg btn-primary btn-block" type="submit" >Search</button>
+                                                </div>
+
+                                             </form>
+                                      </div>
+                                  </div>
+                                  <div id="new_search"><ul id="search_list" style="list-style-type:none;text-align:center"></ul></div>
+
+
 
                              </div>
-                         </div>
-                     </div>
-                </div>
+                        </div>
+                    </div>
+        </div>
 
 
         <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="col-lg-12 center-block">
                          <div class="form-group">
-                            <div class="col-xs-4 col-lg-offset-4">
 
 
-                                   <form class="form-signin" role="form"  method="POST" id="searchSong">
-                                       <h2 class="form-signin-heading">Add To The List</h2>
-                                       <input type="text" class="form-control" name="search" id="search" required autofocus>
 
-                                   <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
-
-                                   </form>
-                            </div>
                          </div>
-                         <div class="form-group"><ul id="search_list" style="list-style-type:none"></ul></div>
-                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -208,38 +218,31 @@
                 data = $form.serialize(),
                 url = "/searchSong";
 
+
             var posting = $.post( url, { formData: data } );
 
             posting.done(function(results){
                 if(results.success){
                     window.alert("SUCCESSSSSS" + results.data);
 
+                    var list = document.getElementById('search_list');
+                    list.innerHTML = '';
+
+
+                    for (var i=soFarPlayed+1; i < results.data[1].length; i++){
+
+                        var node=document.createElement("li");
+                        var textnode=document.createTextNode(results.data[1][i]);
+                        node.appendChild(textnode);
+                        document.getElementById("search_list").appendChild(node);
+                     }
+
+
                 }else{
                     window.alert("FAAIAILLUURREEEE");
                 }
             });
-
-        function postAJAX(url, data){
-            var posting = $.post( url, { data: data});
-
-
-        }
-
-
-
-
-          /*$("button").click(function(){
-            $.post("demo_test_post.asp",
-            {
-              name:"Donald Duck",
-              city:"Duckburg"
-            },
-            function(data,status){
-              alert("Data: " + data + "\nStatus: " + status);
-            });
-          });
-        });*/
-        });
+         });
 
 
 
