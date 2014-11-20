@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="col-lg-12 center-block">
-                     <div class="form-group">
+                     <div class="form-group prev_next">
 
                             <h1>Now Playing</h1>
                             <p id="label"></p></p>
