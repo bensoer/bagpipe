@@ -276,7 +276,7 @@ footer {
 
 /* Player */
 
-.prev_next {
+#prev_next {
     width: 640px;
     margin: 0 auto;
 }
