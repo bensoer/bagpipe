@@ -49,5 +49,36 @@ class YoutubeController extends BaseController {
         return View::make('party.playlist')->with("videoData", array("videoIDs" => $videoIDs, "videoNames" => $videoNames));
     }
 
+    public function AJAXSearch(){
+        $inputData = Input::get('formData');
+        parse_str($inputData, $formFields);
+
+        $search = $formFields['search'];
+
+        $results = $this->searchForVideos($search);
+
+        return Response::json(array(
+            'success' => true,
+            'data' => $results
+        ));
+    }
+
+    private function searchForVideos($search){
+        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
+        $searchResult = $this->youtube->searchVideos($search);
+
+        $videos = array(array());
+        foreach($searchResult as $search){
+            $videoId = $search->id->videoId;
+            $video = $this->youtube->getVideoInfo($videoId);
+
+            $videos[0][] = $video->player->embedHtml . "</iframe>";
+            $videos[1][] = $video->snippet->title;
+
+        }
+
+        return $videos;
+    }
+
 
 }

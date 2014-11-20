@@ -69,4 +69,8 @@ Route::any('/playlist', [
     'as' => 'playlist',
     'uses' => 'YoutubeController@playlist'
 ]);
+Route::any('/searchSong',[
+    'as' => 'searchSong',
+    'uses' => 'YoutubeController@AJAXSearch'
+]);
 

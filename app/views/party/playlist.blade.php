@@ -26,18 +26,50 @@
                     <div class="col-lg-12 text-center">
                         <div class="col-lg-12 center-block">
                              <div class="form-group">
+                                  <div >
+                                        <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
 
-                                    <h1>Up Next</h1>
-                                    <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
+                                        <h1 style="display:inline">Up Next</h1>
+
+                                        <button type="button" class="btn btn-default" style="float:right" onclick="goToNext()">Play Next</button>
+                                  </div>
+
+
+                                  <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
 
 
                              </div>
                          </div>
                      </div>
                 </div>
+
+
+        <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="col-lg-12 center-block">
+                         <div class="form-group">
+                            <div class="col-xs-4 col-lg-offset-4">
+
+
+                                   <form class="form-signin" role="form"  method="POST" id="searchSong">
+                                       <h2 class="form-signin-heading">Add To The List</h2>
+                                       <input type="text" class="form-control" name="search" id="search" required autofocus>
+
+                                   <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+
+                                   </form>
+                            </div>
+                         </div>
+                         <div class="form-group"><ul id="search_list" style="list-style-type:none"></ul></div>
+                         </div>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <script>
+
+
         <?php $videoIDs = $videoData['videoIDs'];
         $videoNames = $videoData['videoNames']; ?>
         var videoIDs = Array(<?php for($i=0;$i< count($videoIDs);++$i){ if($i == count($videoIDs)-1){ echo '"'.$videoIDs[$i].'"';}else{ echo '"'.$videoIDs[$i].'"'.",";}}?>);
@@ -47,6 +79,7 @@
       var tag = document.createElement('script');
 
       tag.src = "https://www.youtube.com/iframe_api";
+      //tag.src = "http://www.youtube.com/apiplayer?enablejsapi=1&version=3";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -105,7 +138,7 @@
 
       //returns the id of the next video
       function loadNextVideo(){
-        if(soFarPlayed > videoIDs.length){
+        if(soFarPlayed >= videoIDs.length){
             return null;
         }else{
             document.getElementById("label").innerHTML = videoNames[soFarPlayed];
@@ -114,6 +147,31 @@
         }
 
       }
+
+      function goToPrevious(){
+            if(soFarPlayed - 2 >= 0){
+                soFarPlayed = soFarPlayed - 2;
+
+                 var videoId = loadNextVideo();
+                   if(videoId == null){
+                       //once played all the videos should we stop or replay ??
+                   }else{
+                       player.loadVideoById({videoId:videoId});
+                       player.playVideo();
+                   }
+            }
+
+
+      }
+      function goToNext(){
+           var videoId = loadNextVideo();
+           if(videoId == null){
+               //once played all the videos should we stop or replay ??
+           }else{
+               player.loadVideoById({videoId:videoId});
+               player.playVideo();
+           }
+        }
 
       function getSongs(){
         //make ajax call back with list to return song data belonging to the videos
@@ -137,9 +195,53 @@
            // li.innerHTML=li.innerHTML + videoNames[i];
              //list.appendChild(li);
 
+
+        }
+      }
+
+        $("#searchSong").submit(function(event){
+            alert("Called");
+            event.preventDefault();
+
+
+            var $form = $( this ),
+                data = $form.serialize(),
+                url = "/searchSong";
+
+            var posting = $.post( url, { formData: data } );
+
+            posting.done(function(results){
+                if(results.success){
+                    window.alert("SUCCESSSSSS" + results.data);
+
+                }else{
+                    window.alert("FAAIAILLUURREEEE");
+                }
+            });
+
+        function postAJAX(url, data){
+            var posting = $.post( url, { data: data});
+
+
         }
 
-      }
+
+
+
+          /*$("button").click(function(){
+            $.post("demo_test_post.asp",
+            {
+              name:"Donald Duck",
+              city:"Duckburg"
+            },
+            function(data,status){
+              alert("Data: " + data + "\nStatus: " + status);
+            });
+          });
+        });*/
+        });
+
+
 
 
     </script>

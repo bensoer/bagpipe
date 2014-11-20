@@ -16,11 +16,12 @@ class CreateUserTable extends Migration {
 		{
             $table->increments("id");
            // $table->string("username");
-            $table->string("password");
-            $table->string("email");
+            $table->string("password")->nullable();
+            $table->string("email")->nullable();
             $table->string("remember_token")->nullable();
-            $table->boolean("locked")->default(0);
-            $table->string("confirmation_code")->nullable();
+            //$table->boolean("locked")->default(0);
+            //$table->string("confirmation_code")->nullable();
+            $table->string("session_token");
             $table->timestamps();
 		});
 	}

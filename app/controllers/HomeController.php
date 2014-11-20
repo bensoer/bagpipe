@@ -27,7 +27,11 @@ class HomeController extends BaseController {
 
     public function host()
     {
-        return View::make('party.host');
+        $user = new User();
+        $token = str_random(10);
+        $user->session_token = $token;
+        $user->save();
+        return View::make('party.host')->with('shareCode', $token);
     }
 
     public function about()
