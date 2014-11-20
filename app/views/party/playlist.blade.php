@@ -26,7 +26,7 @@
                     <div class="col-lg-12 text-center">
                         <div class="col-lg-12 center-block">
                              <div class="form-group" style="border: 2px solid black;text-align:center">
-                                  <div >
+                                  <div class="prev_next">
                                         <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
 
                                         <h1 style="display:inline">Up Next</h1>
