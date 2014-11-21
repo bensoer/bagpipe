@@ -28,18 +28,19 @@
 
                         </div>
                     </div>
+                </form>
                     <div class="form-group">
                         <div class="col-xs-4 col-lg-offset-4">
                             <!-- JavaScript loaded search title -->
                             <h1 id="search_results_title"></h1></h1>
                             <!-- JavaScript loaded search list -->
-                            <div id="search_list[]" class="list-group" style="text-align:left">
+                            <div id="search_list" class="list-group" style="text-align:left">
 
 
                             </div>
                         </div>
 
-                </form>
+
 
 
             </div>
@@ -164,7 +165,7 @@
           // 5. The API calls this function when the player's state changes.
           //    The function indicates that when playing a video (state=1),
           //    the player should play for six seconds and then stop.
-          var done = false;
+
           function onPlayerStateChange(event) {
             //if (event.data == YT.PlayerState.PLAYING && !done) {
               //setTimeout(stopVideo, 6000);
@@ -219,6 +220,7 @@
                        }
                 }
           }
+
           function goToNext(){
                var videoId = loadNextVideo();
                if(videoId == null){
@@ -229,6 +231,9 @@
                }
             }
 
+            /**
+             * Loads songs from the videoNames array and builds the Up Next list from it
+             */
           function getSongs(){
 
             //var list = document.body.appendChild(document.getElementById("list"));
@@ -251,6 +256,7 @@
           }
 
             $("#searchSong").submit(function(event){
+            //function submitSearch(){
                 //alert("Called");
                 event.preventDefault();
 
@@ -286,11 +292,13 @@
 
                             var checkbox = document.createElement("input");
                             checkbox.type="checkbox";
-                            checkbox.value = results.data[0][i]; //store videoID in the checkbox value
-                            checkbox.id = "results[]";
+                            //checkbox.innerHTML = results.data[1][i];
+                            checkbox.name = results.data[1][i];
+                            checkbox.value = results.data[3][i]; //store videoID in the checkbox value
+
                             //checkbox.onClick future implementation allowing onclick adding of the song to the list
 
-
+                            //checkbox.appendChild(textnode);
                             link.appendChild(checkbox);
                             link.appendChild(textnode);
 
@@ -299,7 +307,7 @@
 
                          var submitSelectedBtn = document.createElement("button");
                          submitSelectedBtn.innerHTML = "Add To List";
-                         submitSelectedBtn.onClick = "addToPlaylist()"
+                         submitSelectedBtn.addEventListener("click", addToPlaylist);
 
                          document.getElementById("search_list").appendChild(submitSelectedBtn);
 
@@ -316,13 +324,40 @@
                     searchResultsTitle.innerHTML = "Results";
                 });
              });
-
+             //}
+            /**
+             * Gets all elements from the search list, looks for all the checkbox elements that are checked, and adds
+             * them to the lists
+             */
              function addToPlaylist(){
-                console.error("Here");
-                var results = document.getElementById("results[]");
+                //console.error("Here");
+                var results = document.getElementById("search_list").getElementsByTagName('INPUT');
+
+                var list = document.getElementById('search_list');
+                var searchResultsTitle = document.getElementById("search_results_title");
+
+                var addedCount = 0
                 for(var i = 0; i <results.length; i++){
-                    alert(results[i]);
+                    if(results[i].type == "checkbox" && results[i].checked == true){
+                        videoNames.push(results[i].name);
+                        videoIDs.push(results[i].value);
+                        soFarPlayed--;
+                        getSongs();
+                        soFarPlayed++;
+                        addedCount++;
+
+                    }
                 }
+                list.innerHTML = "";
+                if(addCount > 1){
+                    searchResultsTitle.innerHTML = "Songs Successfuly Added";
+                }else{
+                    searchResultsTitle.innerHTML = "Song Successfuly Added";
+                }
+
+
+
+
              }
 
 

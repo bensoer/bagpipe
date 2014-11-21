@@ -74,6 +74,7 @@ class YoutubeController extends BaseController {
 
             $videos[0][] = $video->player->embedHtml . "</iframe>";
             $videos[1][] = $video->snippet->title;
+            $videos[3][] = $videoId;
 
         }
 
