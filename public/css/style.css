@@ -296,6 +296,14 @@ a.navbar-brand {
     background-color: #FFF;
 }
 
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #FFF;
+}
+
+.navbar-default .navbar-brand {
+    color: #FFF;
+}
+
 .navbar-nav>li>span {
     padding: 15px;
     display: block;
