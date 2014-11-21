@@ -117,9 +117,14 @@
 
             <?php $videoIDs = $data['videoIDs'];
             $videoNames = $data['videoNames']; ?>
+            /** videoIDs - main array referred to for loading and rendering playlist videos **/
             var videoIDs = Array(<?php for($i=0;$i< count($videoIDs);++$i){ if($i == count($videoIDs)-1){ echo '"'.$videoIDs[$i].'"';}else{ echo '"'.$videoIDs[$i].'"'.",";}}?>);
+            /** videoNames - main array referred to for namings of songs as they play **/
             var videoNames = Array(<?php for($i=0;$i< count($videoNames);++$i){ if($i == count($videoNames)-1){ echo '"'.$videoNames[$i].'"';}else{ echo '"'.$videoNames[$i].'"'.",";}}?>);
-           var soFarPlayed = 0;
+            /** soFarPlayed - master counter for how far through the playlist the user is. Increments 1 ahead of currently playing video **/
+            var soFarPlayed = 0;
+
+
           // 2. This code loads the IFrame Player API code asynchronously.
           var tag = document.createElement('script');
 
@@ -349,7 +354,7 @@
                     }
                 }
                 list.innerHTML = "";
-                if(addCount > 1){
+                if(addedCount > 1){
                     searchResultsTitle.innerHTML = "Songs Successfuly Added";
                 }else{
                     searchResultsTitle.innerHTML = "Song Successfuly Added";
