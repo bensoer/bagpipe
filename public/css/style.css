@@ -285,10 +285,15 @@ footer {
 /* Nav bar */
 
 /* link */
+.navbar-custom .navbar-brand,
 .navbar-brand:hover,
 .navbar-brand:focus,
 a.navbar-brand {
     color: #FFF;
+}
+
+.navbar-custom .navbar-toggle .icon-bar {
+    background-color: #FFF;
 }
 
 .navbar-nav>li>span {
