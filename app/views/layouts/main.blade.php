@@ -49,7 +49,7 @@
 
 </head>
 
-<body>
+<body id="page-top" class="index">
 
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
