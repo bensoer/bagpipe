@@ -10,9 +10,11 @@
     <div class="row">
         <div class="col-lg-12 text-center">
             <h1>I am a host!</h1>
+            <!-- PHP dynamicaly loaded share code -->
             Invite your crowd: <code>{{ $data['shareCode'] }}</code></p>
 
             <div class="col-lg-12 center-block">
+                <!-- Dear Ryan: inputs in form NEED to be kept. Otherwise functionality will break -->
                 <form class="form-signin" role="form"  method="POST" id="searchSong">
 
                     <div class="form-group">
@@ -33,7 +35,7 @@
                         <div class="col-xs-4 col-lg-offset-4">
                             <!-- JavaScript loaded search title -->
                             <h1 id="search_results_title"></h1></h1>
-                            <!-- JavaScript loaded search list -->
+                            <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
                             <div id="search_list" class="list-group" style="text-align:left">
 
 
