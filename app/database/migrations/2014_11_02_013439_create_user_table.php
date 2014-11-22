@@ -30,6 +30,7 @@ class CreateUserTable extends Migration {
             $table->increments("id");
             $table->string("session_token");
             $table->string("songid");
+            $table->string("songname");
             $table->string("votes")->default(0);
             $table->integer("priority");
         });

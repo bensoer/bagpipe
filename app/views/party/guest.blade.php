@@ -4,17 +4,17 @@
 @stop
 
 @section('navies')
-
+<!--
 <li class="page-scroll">
     <span id="sharelabel">Share</span>
 </li>
 <li class="page-scroll">
     <div id="sharecode">
-        <!-- TODO: Sharecode goes here -->
+
         <span >AA098</span>
     </div>
 </li>
-
+-->
 @stop
 
 @section('control')
@@ -26,10 +26,10 @@
             <div class="col-lg-12 center-block">
                  <div class="form-group prev_next">
 
+                        <h2>Now Playing</h2>
                         <!-- JavaScript loaded now playing list -->
                         <p id="label"></p>
-                        <!-- Youtube player module -->
-                        <div id="player"></div>
+
 
                  </div>
 
@@ -66,13 +66,31 @@
 
 
 
-                        <!-- JavaScript loaded up next list-->
-                      <div id="next"><ul id="list" class="list-group" style="list-style-type:none"></ul></div>
+                        <!-- JavaScript and PHP loaded up next list-->
+                      <div id="next">
+                            <ul id="list" class="list-group" style="list-style-type:none">
+                                <?php foreach($songlist as $songData){ ?>
+                                    <li class="queue-item"><?php echo $songData->songname ?></li>
+
+                               <?php } ?>
+                            </ul>
+                      </div>
 
                  </div>
         </div>
     </div>
 </div>
 
+<script>
 
+
+    function getCurrentlyPlaying(){
+
+    }
+
+    function getUpNext(){
+
+    }
+
+</script>
 @stop

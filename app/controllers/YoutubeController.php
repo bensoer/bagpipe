@@ -82,6 +82,7 @@ class YoutubeController extends BaseController {
     }
 
     public function AJAXAddSongs(){
+        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
         $inputData = Input::get('formData');
         //parse_str($inputData, $formFields);
        $json =  json_decode($inputData);
@@ -92,8 +93,13 @@ class YoutubeController extends BaseController {
         $sessionToken = $json[$length-1];
 
         for($i=0 ; $i < $length-1 ; $i++){
+
+            $video = $this->youtube->getVideoInfo($json[$i]);
+            $title = $video->snippet->title;
+
+
             DB::table('songlist')->insert(
-                array( "session_token" => $sessionToken, "songid" => $json[$i], "priority" => $i+1)
+                array( "session_token" => $sessionToken, "songid" => $json[$i], "songname" => $title, "priority" => $i+1)
             );
         }
 

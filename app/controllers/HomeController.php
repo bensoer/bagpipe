@@ -24,6 +24,41 @@ class HomeController extends BaseController {
         return View::make('pages.index');
     }
 
+    public function findParty(){
+
+        if($this->isAPostRequest()){
+            $token = Input::get('party_search');
+
+            //avoiding injection
+            if($token === strip_tags($token)){
+
+                $results = DB::table('user')->where('session_token', $token)->first();
+
+                if(empty($results)){
+                    return Redirect::back()
+                        ->with('error','Sorry, this host does not exist or has closed the session');
+                }else{
+
+                    $songlist = DB::table('songlist')->where('session_token',$token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+
+                    return View::make('party.guest')->with('songlist', $songlist);
+                }
+
+
+
+            }else{
+                return Redirect::back()
+                    ->with('error', 'Invalid Token Submitted');
+            }
+
+
+
+        }else{
+            return View::make('party.findparty');
+        }
+
+    }
+
     public function guest()
     {
         return View::make('party.guest');
@@ -94,6 +129,14 @@ class HomeController extends BaseController {
     public function dashboard(){
 
         return View::make('dashboard');
+    }
+
+    private function isAPostRequest(){
+        if($_SERVER['REQUEST_METHOD']==='POST'){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

@@ -47,9 +47,9 @@ Route::get('/about', [
     'as' => 'about',
     'uses' => 'HomeController@about'
 ]);
-Route::get('/guest', [
+Route::any('/guest', [
     'as' => 'guest',
-    'uses' => 'HomeController@guest'
+    'uses' => 'HomeController@findParty'
 ]);
 Route::get('/host', [
     'as' => 'host',
