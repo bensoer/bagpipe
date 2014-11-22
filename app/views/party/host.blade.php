@@ -437,7 +437,7 @@
                 var post = $.post(url3, {formData: data});
 
                 post.done(function(result){
-                    alert("Decoupling Sent \n" + result.data);
+                    //alert("Decoupling Sent \n" + result.data);
 
                 });
 
