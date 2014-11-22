@@ -31,13 +31,15 @@ class HomeController extends BaseController {
 
     public function host()
     {
-       //$user = new User();
+       $user = new User();
         $token = str_random(10);
-        //$user->session_token = $token;
-        //$user->save();
+        $user->session_token = $token;
+        $user->save();
+
+        //Session::put("token", $token);
 
         $playlist = $this->playlist();
-        return View::make('party.host')->with('data', array( 'shareCode' => $token, "videoIDs" => $playlist['videoIDs'], "videoNames" => $playlist['videoNames']));
+        return View::make('party.host')->with('data', array( 'shareCode' => $token));//, "videoIDs" => $playlist['videoIDs'], "videoNames" => $playlist['videoNames']));
     }
 
 

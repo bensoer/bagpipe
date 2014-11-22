@@ -73,4 +73,12 @@ Route::any('/searchSong',[
     'as' => 'searchSong',
     'uses' => 'YoutubeController@AJAXSearch'
 ]);
+Route::any('/addToPlaylist', [
+    'as' => 'updateSongs',
+    'uses' => 'YoutubeController@AJAXAddSongs'
+]);
+Route::any('/unloadDBSession', [
+    'as' => 'unloadDBSession',
+    'uses' => 'YoutubeController@AJAXUnloadDBSession'
+]);
 

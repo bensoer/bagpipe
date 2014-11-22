@@ -24,6 +24,15 @@ class CreateUserTable extends Migration {
             $table->string("session_token");
             $table->timestamps();
 		});
+
+        Schema::create('songlist', function(Blueprint $table)
+        {
+            $table->increments("id");
+            $table->string("session_token");
+            $table->string("songid");
+            $table->string("votes")->default(0);
+            $table->integer("priority");
+        });
 	}
 
 	/**
@@ -34,6 +43,7 @@ class CreateUserTable extends Migration {
 	public function down()
 	{
         Schema::dropIfExists("user");
+        Schema::dropIfExists("songlist");
 	}
 
 }

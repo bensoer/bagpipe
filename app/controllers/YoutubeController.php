@@ -81,5 +81,42 @@ class YoutubeController extends BaseController {
         return $videos;
     }
 
+    public function AJAXAddSongs(){
+        $inputData = Input::get('formData');
+        //parse_str($inputData, $formFields);
+       $json =  json_decode($inputData);
+
+        //need to have order maintained in database. belongs to token in last position
+
+        $length = count($json);
+        $sessionToken = $json[$length-1];
+
+        for($i=0 ; $i < $length-1 ; $i++){
+            DB::table('songlist')->insert(
+                array( "session_token" => $sessionToken, "songid" => $json[$i], "priority" => $i+1)
+            );
+        }
+
+
+
+        return Response::json(array(
+            'success' => true,
+            'data' => $inputData
+        ));
+    }
+
+    public function AJAXUnloadDBSession(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        DB::table('songlist')->where('session_token','=', $json->session_token)->delete();
+        DB::table('user')->where('session_token','=', $json->session_token)->delete();
+
+        return Response::json(array(
+            'data' => $json
+        ));
+
+    }
+
 
 }
