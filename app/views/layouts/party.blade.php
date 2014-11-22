@@ -35,9 +35,9 @@
     <div class="row">
         <div class="col-lg-12">
             <div id="searchbox">
-                <form class="navbar-form navbar-left" role="search">
+                <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
                     <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Search">
+                      <input type="text" class="form-control" placeholder="Search" name="search" id="search">
                     </div>
                 </form>
             </div>

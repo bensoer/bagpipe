@@ -1,36 +1,99 @@
-@extends('layouts.main')
+@extends('layouts.party')
 
 @section('meta-title', 'Host')
 @stop
 
-@section('content')
+@section('navies')
+
+<li class="page-scroll">
+    <span id="sharelabel">Share</span>
+</li>
+<li class="page-scroll">
+    <div id="sharecode">
+        <!-- TODO: Sharecode goes here -->
+        <span id="token">{{ $data['shareCode'] }}</span>
+    </div>
+</li>
+
+@stop
+
+
+
+
+@section('control')
+
+
+<!-- Currently playing -->
+<div id="current-song">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="col-lg-12 center-block">
+                 <div class="form-group prev_next">
+
+                        <!-- JavaScript loaded now playing list -->
+                        <p id="label"></p>
+                        <!-- Youtube player module -->
+                        <div id="player"></div>
+
+                 </div>
+
+                     <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
+                     <button type="button" class="btn btn-default" style="float:left" onclick="stopVideo()">Stop Playlist</button>
+                     <button type="button" class="btn btn-default" style="float:right" onclick="goToNext()">Play Next</button>
+                     <button type="button" class="glyphicon glyphicon-play" aria-hidden="true" style="float:right" onclick="changeState()">Play/Pause Playlist</button>
+                     <span class="glyphicon glyphicon-play-circle" aria-hidden="true" onclick="playVideo()"></span>
+
+             </div>
+         </div>
+    </div>
+</div>
+
+<!-- Queue of YT videos -->
+<div id="queue-list">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+                 <div class="form-group" style="border: 2px solid black;text-align:center">
+
+                            <ul>
+                                <li class="queue-item">
+                                    Video 1
+                                </li >
+
+                                <li class="queue-item">
+                                    Video 2
+                                </li>
+                                <li class="queue-item">
+                                    Video 3
+                                </li>
+
+                            </ul>
+
+
+
+                        <!-- JavaScript loaded up next list-->
+                      <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
+
+                 </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- OLD PAGE-->
+
+
 
 <div class="container" style="min-height: 350px;">
 
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1>I am a host!</h1>
-            <!-- PHP dynamicaly loaded share code -->
-            Invite your crowd: <code id="token">{{ $data['shareCode'] }}</code>
+
 
             <div class="col-lg-12 center-block">
-                <!-- Dear Ryan: inputs in form NEED to be kept. Otherwise functionality will break -->
-                <form class="form-signin" role="form"  method="POST" id="searchSong">
 
-                    <div class="form-group">
-                        <div class="col-xs-4 col-lg-offset-4">
-
-                                 <h2 class="form-signin-heading">Add To The List</h2>
-                                 <div>
-                                    <input type="text" class="form-control" name="search" id="search" required autofocus>
-
-                                    <button id="submit_search" class="btn btn-lg btn-primary btn-block" type="submit" >Search</button>
-                                </div>
-
-
-                        </div>
-                    </div>
-                </form>
                     <div class="form-group">
                         <div class="col-xs-4 col-lg-offset-4">
                             <!-- JavaScript loaded search title -->
@@ -41,10 +104,6 @@
 
                             </div>
                         </div>
-
-
-
-
             </div>
 
 
@@ -52,65 +111,6 @@
     </div>
     <!-- /.row -->
 
-
-    <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="col-lg-12 center-block">
-                         <div class="form-group prev_next">
-
-                                <h1>Now Playing</h1>
-                                <!-- JavaScript loaded now playing list -->
-                                <p id="label"></p></p>
-                                <!-- Youtube player module -->
-                                <div id="player"></div>
-
-                         </div>
-                     </div>
-                 </div>
-            </div>
-
-    <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="col-lg-12 center-block">
-                         <div class="form-group" style="border: 2px solid black;text-align:center">
-                              <div >
-                                    <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
-                                    <button type="button" class="btn btn-default" style="float:left" onclick="changeState()">Pause/Play Playlist</button>
-
-
-                                    <h1 style="display:inline">Up Next</h1>
-
-                                    <button type="button" class="btn btn-default" style="float:right" onclick="goToNext()">Play Next</button>
-                              </div>
-
-                                <!-- JavaScript loaded up next list-->
-                              <div id="next"><ul id="list" class="list-group" style="list-style-type:none"></ul></div>
-
-
-
-
-
-
-                         </div>
-                    </div>
-                </div>
-    </div>
-
-
-            <div class="row">
-                    <div class="col-lg-12 text-center">
-                        <div class="col-lg-12 center-block">
-                             <div class="form-group">
-
-
-
-                             </div>
-
-
-                        </div>
-                    </div>
-                </div>
-        </div>
 
 <!-- AJAX/JAVASCRIPT/YOUTUBE API -->
         <script>
@@ -272,6 +272,7 @@
             for (var i=soFarPlayed+1; i < videoNames.length; i++){
 
                 var node=document.createElement("li");
+                node.className = "queue-item";
                 var textnode=document.createTextNode(videoNames[i]);
                 node.appendChild(textnode);
                 document.getElementById("list").appendChild(node);
@@ -292,8 +293,8 @@
                 var submitBtn = document.getElementById("submit_search");
                 var searchResultsTitle = document.getElementById("search_results_title");
 
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = "Searching...";
+                //submitBtn.disabled = true;
+                //submitBtn.innerHTML = "Searching...";
 
 
 
@@ -348,8 +349,8 @@
                         window.alert("FAAIAILLUURREEEE");
                     }
 
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = "Search";
+                    //submitBtn.disabled = false;
+                    //submitBtn.innerHTML = "Search";
                     searchResultsTitle.innerHTML = "Results";
                 });
              });
