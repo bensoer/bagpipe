@@ -352,3 +352,33 @@ section {
     background: #FFF;
     width: 100%;
 }
+
+/* Form */
+
+#searchbox .navbar-form {
+    width: 100%;
+}
+
+#searchbox .form-group,
+#searchbox .form-group .form-control {
+    width: 100%;
+    height: 50px;
+}
+
+#queue-list {
+    padding: 0;
+    margin: 0;
+}
+
+#queue-list ul
+{
+    list-style-type: none;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.queue-item {
+    width: 100%;
+    border-bottom: 1px solid #e2e2e2;
+    padding: 15px 18px;
+}
