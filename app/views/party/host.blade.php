@@ -159,17 +159,17 @@
 
            /** Called by The Youtube Player is ready **/
           function onPlayerReady(event) {
-            alert("player ready");
+            //alert("player ready");
             var videoId = loadNextVideo();
-            alert("got video id");
+            //alert("got video id");
             if(videoId == null){
-                alert("found its null");
+                //alert("found its null");
                 if(videoIDs.length == 0){
                     document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
                 }
                 //once its played all the videos should we stop or replay ??
             }else{
-                alert("found a video");
+                //alert("found a video");
                 player.loadVideoById({videoId:videoId});
                 player.playVideo();
             }
@@ -250,7 +250,7 @@
           function goToNext(){
                var videoId = loadNextVideo();
                if(videoId == null){
-                    alert("Got caught in here");
+                    //alert("Got caught in here");
                    //once played all the videos should we stop or replay ??
                }else{
                    player.loadVideoById({videoId:videoId});
@@ -367,7 +367,7 @@
 
                 //determine whether this is the first time the playlist is being added to
                 if(videoIDs.length == 0){
-                    alert("was empty..");
+                    //alert("was empty..");
                     wasEmptyBefore = true;
                 }
 
