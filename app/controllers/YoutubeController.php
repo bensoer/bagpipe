@@ -104,6 +104,12 @@ class YoutubeController extends BaseController {
        $user = DB::table('user')->where('session_token', $json->session_token)->first();
        $songData = DB::table('songlist')->where(array('session_token' => $json->session_token, 'priority' => $user->currently_playing))->first();
 
+        if(empty($user)){
+            return Response::json(array(
+                "success" => false
+            ));
+        }
+
         return Response::json(array(
             'success' => true,
             'id' => $songData->songid,
@@ -116,7 +122,7 @@ class YoutubeController extends BaseController {
         $json = json_decode($inputData);
 
         $user = DB::table('user')->where('session_token', $json->session_token)->first();
-        $songData = DB::table('songlist')->select('songname')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();;
+        $songData = DB::table('songlist')->select('songname','songid','votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();;
 
         if(empty($user)){
             return Response::json(array(
@@ -124,9 +130,11 @@ class YoutubeController extends BaseController {
             ));
         }
 
-        $array = Array();
+        $array = Array(Array());
         for($i = $user->currently_playing+1 ; $i < count($songData); $i++){
-            $array[] = $songData[$i]->songname;
+            $array[0][] = $songData[$i]->songname;
+            $array[1][] = $songData[$i]->songid;
+            $array[2][] = $songData[$i]->votes;
         }
 
         $returnData = json_encode($array);

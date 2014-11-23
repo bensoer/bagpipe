@@ -10,7 +10,7 @@
         <!-- TODO: when user joins, return with input update on join, refresh queue list -->
         <input type="text" class="form-control" maxlength="11" size="11"
                title="Join" placeholder="CODE HERE"
-               value="<?php $songlist = $data['songlist']; echo $songlist[0]->session_token ?>">
+               value="<?php echo $data['token']; ?>">
         <span class="input-group-btn">
             <button class="btn btn-success" type="button">Join!</button>
         </span>
@@ -26,7 +26,7 @@
     <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
             <div class="form-group">
               <input type="text" class="form-control" placeholder="Search" name="search" id="search">
-              <p hidden id="token"><?php echo $data['token']; ?></p>
+              <p hidden id="session_token"><?php echo $data['token']; ?></p>
             </div>
     </form>
 </div>
@@ -120,12 +120,12 @@
 
 <script>
     var rate = 5 * 1000;
-    window.setInterval(getCurrentlyPlaying, rate);
-    window.setInterval(getUpNext, rate);
+    window.setTimeout(getCurrentlyPlaying, rate);
+    window.setTimeout(getUpNext, rate);
 
 
     function getCurrentlyPlaying(){
-        var token = document.getElementById("token");
+        var token = document.getElementById("session_token");
         var json = {"session_token": token.innerHTML};
 
         var data = JSON.stringify(json);
@@ -134,13 +134,25 @@
         var post = $.post(url, {formData: data});
 
         post.done(function(result){
-            var lbl = document.getElementById("label");
-            lbl.innerHTML = result.name;
+            if(result.success == false){
+
+            }else{
+                var lbl = document.getElementById("label");
+                lbl.innerHTML = "";
+
+                var link = document.createElement("a");
+                link.href= "https://www.youtube.com/watch?v=" + result.id;
+                link.target = "_blank";
+                link.innerHTML = result.name;
+
+                lbl.appendChild(link);
+            }
+
         });
     }
 
     function getUpNext(){
-       var token = document.getElementById("token");
+       var token = document.getElementById("session_token");
        var list = document.getElementById('list');
        var json = {"session_token": token.innerHTML};
 
@@ -149,19 +161,105 @@
 
        var post = $.post(url, {formData: data});
 
+       //alert(token.innerHTML);
+
        post.done(function(result){
             if(result.success == false){
                 location.reload();
             }else{
                 var json = JSON.parse(result);
-                //alert(json[0] + "\n" + json.length);
+                //alert(json[0] + "\n" + json[1] + "\n" + json[2] + "\n" +  json.length);
                 list.innerHTML = '';
 
-               for(var i = 0; i < json.length ; i++){
+               for(var i = 0; i < json[0].length ; i++){
+
+
+
                     var listItem = document.createElement("li");
                     listItem.className = "queue-item";
-                    var textnode = document.createTextNode(json[i]);
-                    listItem.appendChild(textnode);
+
+                    var rowDiv = document.createElement("div");
+                    rowDiv.className = "row";
+
+                    var tntDiv = document.createElement("div");
+                    tntDiv.className = "col-lg-8";
+
+                        var mediaDiv = document.createElement("div");
+                        mediaDiv.className = "media";
+
+                            var thumbLink = document.createElement("a");
+                            thumbLink.className = "meda-left queue-thumb";
+                            thumbLink.target = "_blank";
+                            thumbLink.href="https://www.youtube.com/watch?v=" + json[1][i];
+
+                                var thumbImg = document.createElement("img");
+                                thumbImg.src = "http://img.youtube.com/vi/" + json[1][i] + "/hqdefault.jpg";
+                                thumbImg.style.height = "50px";
+                                thumbImg.style.width = "67px";
+                                thumbImg.style.verticalAlign = "middle";
+
+                            thumbLink.appendChild(thumbImg);
+
+                            var mediaBodyDiv = document.createElement("div");
+                            mediaBodyDiv.className = "media-body media-middle";
+                            mediaBodyDiv.target = "_blank";
+
+                                var mediaBodyLink = document.createElement("a");
+                                mediaBodyLink.href="https://www.youtube.com/watch?v=" + json[1][i];
+
+                                    var mediaBodySpan = document.createElement("span");
+                                    mediaBodySpan.className = "media-heading";
+                                        var songName = document.createTextNode(json[0][i]);
+                                    mediaBodySpan.appendChild(songName);
+
+                                mediaBodyLink.appendChild(mediaBodySpan);
+                            mediaBodyDiv.appendChild(mediaBodyLink);
+                        mediaDiv.appendChild(thumbLink);
+                        mediaDiv.appendChild(mediaBodyDiv);
+                    tntDiv.appendChild(mediaDiv);
+
+                    //votes and upvoting buttons
+
+                    var votingDiv = document.createElement("div");
+                    votingDiv.id = "voting";
+                    votingDiv.className = "btn-group pull-right";
+                    votingDiv.role = "group";
+                    votingDiv.setAttribute("aria-label","...");
+
+                        var votingBtn = document.createElement("button");
+                        votingBtn.type = "button";
+                        votingBtn.className = "btn btn-default votes";
+                        votingBtn.disabled = true;
+                            var votingSpan = document.createElement("span");
+                            votingSpan.className = "votes-number";
+                                var voteNum = document.createTextNode(json[2][i]);
+                            votingSpan.appendChild(voteNum);
+                        votingBtn.appendChild(votingSpan);
+
+                        var upVoteBtn = document.createElement("button");
+                        upVoteBtn.type = "button";
+                        upVoteBtn.className = "btn btn-default upvote";
+                            var upVoteSpan = document.createElement("span");
+                            upVoteSpan.className = "upvote-icon glyphicon glyphicon-chevron-up";
+                            upVoteSpan.setAttribute("aria-hidden", "true");
+                        upVoteBtn.appendChild(upVoteSpan);
+
+                    votingDiv.appendChild(votingBtn);
+                    votingDiv.appendChild(upVoteBtn);
+
+                    rowDiv.appendChild(tntDiv);
+                    rowDiv.appendChild(votingDiv);
+
+                    listItem.appendChild(rowDiv);
+
+
+
+
+
+
+
+                    //var textnode = document.createTextNode(json[i]);
+                    //listItem.appendChild(textnode);
                     document.getElementById("list").appendChild(listItem);
 
                }
