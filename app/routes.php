@@ -69,6 +69,10 @@ Route::any('/playlist', [
     'as' => 'playlist',
     'uses' => 'YoutubeController@playlist'
 ]);
+
+
+#API
+
 Route::any('/searchSong',[
     'as' => 'searchSong',
     'uses' => 'YoutubeController@AJAXSearch'
@@ -84,5 +88,13 @@ Route::any('/unloadDBSession', [
 Route::any('/updateCurrent', [
     'as' => 'updateCuurent',
     'uses' => 'YoutubeController@AJAXUpdateCurrentSong'
+]);
+Route::any('/getCurrent', [
+    'as' => 'getCurrent',
+    'uses' => 'YoutubeController@AJAXGetCurrentSong'
+]);
+Route::any('/getUpNext', [
+    'as' => 'getUpNext',
+    'uses' => 'YoutubeController@AJAXGetUpNextSongs'
 ]);
 

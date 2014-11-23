@@ -97,6 +97,40 @@ class YoutubeController extends BaseController {
 
     }
 
+    public function AJAXGetCurrentSong(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+       $user = DB::table('user')->where('session_token', $json->session_token)->first();
+       $songData = DB::table('songlist')->where(array('session_token' => $json->session_token, 'priority' => $user->currently_playing))->first();
+
+        return Response::json(array(
+            'success' => true,
+            'id' => $songData->songid,
+            'name' => $songData->songname
+        ));
+    }
+
+    public function AJAXGetUpNextSongs(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        $user = DB::table('user')->where('session_token', $json->session_token)->first();
+        $songData = DB::table('songlist')->select('songname')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();;
+
+        $array = Array();
+        for($i = $user->currently_playing+1 ; $i < count($songData); $i++){
+            $array[] = $songData[$i]->songname;
+        }
+
+        $returnData = json_encode($array);
+
+        return Response::json($returnData);
+
+
+
+    }
+
     public function AJAXAddSongs(){
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
         $inputData = Input::get('formData');
@@ -105,17 +139,20 @@ class YoutubeController extends BaseController {
 
         //need to have order maintained in database. belongs to token in last position
 
-        $length = count($json);
-        $sessionToken = $json[$length-1];
+        $length = count($json); //how many to add
+        $sessionToken = $json[$length-1]; //grab the token from the last one
 
-        for($i=0 ; $i < $length-1 ; $i++){
+        //find in database how many songs are there already with this session token
+        $numOfSongs = DB::table('songlist')->where('session_token', $sessionToken)->count();
+
+        for($i=0 ; $i < $length-1 ; $i++){ //grab all except the last token one
 
             $video = $this->youtube->getVideoInfo($json[$i]);
             $title = $video->snippet->title;
 
 
             DB::table('songlist')->insert(
-                array( "session_token" => $sessionToken, "songid" => $json[$i], "songname" => $title, "priority" => $i+1)
+                array( "session_token" => $sessionToken, "songid" => $json[$i], "songname" => $title, "priority" => ($numOfSongs +$i))
             );
         }
 

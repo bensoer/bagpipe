@@ -53,7 +53,7 @@ class HomeController extends BaseController {
                     }
 
                     //var_dump($displayablesonglist);
-                   return View::make('party.guest')->with('songlist', $displayablesonglist);
+                   return View::make('party.guest')->with('data', array('songlist' => $displayablesonglist, 'token' => $token));
                 }
 
 
