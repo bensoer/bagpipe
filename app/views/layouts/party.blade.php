@@ -30,19 +30,18 @@
 </nav>
 
 <!-- search box -->
-<section>
+<section id="search-hub">
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
             @yield('search')
-
         </div>
     </div>
 </div>
 </section>
 
 <!-- control box -->
-<section>
+<section id="control-hub">
 <div class="container">
     <div class="row">
         <div class="col-lg-12">

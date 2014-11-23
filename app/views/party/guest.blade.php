@@ -4,17 +4,19 @@
 @stop
 
 @section('navies')
-<!--
-<li class="page-scroll">
-    <span id="sharelabel">Share</span>
-</li>
-<li class="page-scroll">
-    <div id="sharecode">
 
-        <span >AA098</span>
-    </div>
+<li id="token" class="page-scroll">
+    <div class="input-group">
+        <!-- TODO: when user joins, return with input update on join, refresh queue list -->
+        <input type="text" class="form-control" maxlength="11" size="11"
+               title="Join" placeholder="CODE HERE"
+               value="<?php $songlist = $data['songlist']; echo $songlist[0]->session_token ?>">
+        <span class="input-group-btn">
+            <button class="btn btn-success" type="button">Join!</button>
+        </span>
+    </div><!-- /input-group -->
 </li>
--->
+
 @stop
 
 
@@ -42,8 +44,28 @@
 
                         <h2>Now Playing</h2>
                         <!-- JavaScript  nad PHP loaded now playing list -->
-                        <p id="label"><?php $songlist = $data['songlist']; echo $songlist[0]->songname ?></p>
+                        <p id="label">
+                            <a href="https://www.youtube.com/watch?v=<?php $songlist = $data['songlist'];
+                               echo $songlist[0]->songid; ?>"
+                               target="_blank">
+                               <?php $songlist = $data['songlist']; echo $songlist[0]->songname ?>
+                            </a>
+                        </p>
 
+                 </div>
+             </div>
+         </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="col-lg-12 center-block">
+                 <div class="form-group prev_next">
+
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                            <span class="sr-only">60% Complete</span>
+                          </div>
+                        </div>
 
                  </div>
              </div>
@@ -54,32 +76,40 @@
 <!-- Queue of YT videos -->
 <div id="queue-list">
     <div class="row">
-        <div class="col-lg-12 text-center">
-                 <div class="form-group" style="border: 2px solid black;text-align:center">
-                            <h2>Up Next</h2>
-                            <ul>
-                                <li class="queue-item">
-                                    Video 1
-                                </li >
-
-                                <li class="queue-item">
-                                    Video 2
-                                </li>
-                                <li class="queue-item">
-                                    Video 3
-                                </li>
-
-                            </ul>
-
-
-
+        <div class="col-lg-12">
+                 <div class="form-group">
                         <!-- JavaScript and PHP loaded up next list-->
                       <div id="next">
                             <ul id="list"  style="list-style-type:none">
                                 <?php $songlist = $data['songlist'];
                                     for ($i = 1; $i < count($songlist); $i++){ ?>
-                                    <li class="queue-item"><?php echo $songlist[$i]->songname ?></li>
-
+                                    <li class="queue-item">
+                                        <div class="row">
+                                            <!-- YT Thumbnail and title -->
+                                            <div class="col-lg-8">
+                                                <div class="media">
+                                                    <a class="media-left queue-thumb"
+                                                       href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
+                                                        <img src="http://img.youtube.com/vi/<?php echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                    </a>
+                                                    <div class="media-body media-middle">
+                                                        <a href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
+                                                            <span class="media-heading"><?php echo $songlist[$i]->songname; ?></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Votes and upvote button -->
+                                            <div id="voting" class="btn-group pull-right" role="group" aria-label="...">
+                                              <button type="button" class="btn btn-default votes" disabled>
+                                                <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
+                                              </button>
+                                              <button type="button" class="btn btn-default upvote">
+                                                <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                              </button>
+                                            </div>
+                                        </div>
+                                    </li>
                                <?php } ?>
                             </ul>
                       </div>
