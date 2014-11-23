@@ -22,6 +22,7 @@ class CreateUserTable extends Migration {
             //$table->boolean("locked")->default(0);
             //$table->string("confirmation_code")->nullable();
             $table->string("session_token");
+            $table->integer("currently_playing")->default(1);
             $table->timestamps();
 		});
 

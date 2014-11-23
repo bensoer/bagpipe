@@ -27,8 +27,8 @@
                  <div class="form-group prev_next">
 
                         <h2>Now Playing</h2>
-                        <!-- JavaScript loaded now playing list -->
-                        <p id="label"></p>
+                        <!-- JavaScript  nad PHP loaded now playing list -->
+                        <p id="label"><?php echo $songlist[0]->songname ?></p>
 
 
                  </div>
@@ -69,8 +69,8 @@
                         <!-- JavaScript and PHP loaded up next list-->
                       <div id="next">
                             <ul id="list" class="list-group" style="list-style-type:none">
-                                <?php foreach($songlist as $songData){ ?>
-                                    <li class="queue-item"><?php echo $songData->songname ?></li>
+                                <?php for ($i = 1; $i < count($songlist); $i++){ ?>
+                                    <li class="queue-item"><?php echo $songlist[$i]->songname ?></li>
 
                                <?php } ?>
                             </ul>

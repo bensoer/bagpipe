@@ -39,9 +39,21 @@ class HomeController extends BaseController {
                         ->with('error','Sorry, this host does not exist or has closed the session');
                 }else{
 
+                    //get whole songlist
                     $songlist = DB::table('songlist')->where('session_token',$token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
 
-                    return View::make('party.guest')->with('songlist', $songlist);
+                    //get the user and find what is the currently playing song
+                    $user = DB::table('user')->where('session_token', $token)->first();
+                    $currentlyPlaying = $user->currently_playing;
+
+                    //only send the view the list from the currently playing song onward
+                    $displayablesonglist = Array();
+                    for($i = $currentlyPlaying ; $i < count($songlist) ; $i++){
+                        $displayablesonglist[] = $songlist[$i];
+                    }
+
+                    //var_dump($displayablesonglist);
+                   return View::make('party.guest')->with('songlist', $displayablesonglist);
                 }
 
 

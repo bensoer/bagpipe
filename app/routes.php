@@ -81,4 +81,8 @@ Route::any('/unloadDBSession', [
     'as' => 'unloadDBSession',
     'uses' => 'YoutubeController@AJAXUnloadDBSession'
 ]);
+Route::any('/updateCurrent', [
+    'as' => 'updateCuurent',
+    'uses' => 'YoutubeController@AJAXUpdateCurrentSong'
+]);
 

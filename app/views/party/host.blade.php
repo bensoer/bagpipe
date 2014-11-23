@@ -205,6 +205,7 @@
                 }else{
                     player.loadVideoById({videoId:videoId});
                     player.playVideo();
+                    updateServerCurrentlyPlaying(soFarPlayed-1);
                 }
 
             }
@@ -255,6 +256,7 @@
                        }else{
                            player.loadVideoById({videoId:videoId});
                            player.playVideo();
+                           updateServerCurrentlyPlaying(soFarPlayed-1);
                        }
                 }
           }
@@ -267,6 +269,7 @@
                }else{
                    player.loadVideoById({videoId:videoId});
                    player.playVideo();
+                   updateServerCurrentlyPlaying(soFarPlayed-1);
                }
             }
 
@@ -439,6 +442,23 @@
 
 
 
+             }
+             function updateServerCurrentlyPlaying(number){
+                var token = document.getElementById("token");
+                var json = {"currently_playing" :number, "session_token": token.innerHTML};
+
+                var data = JSON.stringify(json);
+                var url3 = "./updateCurrent";
+
+                var post = $.post(url3, {formData: data});
+
+                post.done(function(result){
+                    if(result.success){
+                        alert("Backend Updated");
+                        alert(result.data);
+
+                    }
+                });
              }
 
             /** triggers when the window is about to be unloaded. removes all database and playlist session information **/

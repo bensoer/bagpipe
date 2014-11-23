@@ -81,6 +81,22 @@ class YoutubeController extends BaseController {
         return $videos;
     }
 
+    public function AJAXUpdateCurrentSong(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        DB::table('user')
+            ->where('session_token', $json->session_token)
+            ->update(array('currently_playing' => $json->currently_playing ));
+
+        return Response::json(array(
+            'success' => true,
+            'data' => $inputData
+        ));
+
+
+    }
+
     public function AJAXAddSongs(){
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
         $inputData = Input::get('formData');
