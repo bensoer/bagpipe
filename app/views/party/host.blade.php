@@ -34,27 +34,61 @@
 
 @section('control')
 
-
 <!-- Currently playing -->
 <div id="current-song">
+    <div class="row">
+        <div class="form-group prev_next">
+            <!-- JavaScript loaded now playing list -->
+            <div class="col-lg-12">
+                <div class="media">
+                    <a class="media-left queue-thumb"
+                       href="https://www.youtube.com/watch?v=fjC7dctw7LU<?php //echo $songlist[$i]->songid; ?>" target="_blank">
+                        <!-- Youtube player module -->
+                        <div id="player"></div>
+                    </a>
+                    <div class="media-body media-middle">
+                        <span id="label" class="media-heading"><?php //echo $songlist[$i]->songname; ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls: Play/Pause, Progress bar, Skip -->
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="col-lg-12 center-block">
                  <div class="form-group prev_next">
 
-                        <!-- JavaScript loaded now playing list -->
-                        <p id="label"></p>
-                        <!-- Youtube player module -->
-                        <div id="player"></div>
+                    <!-- Play/Pause button -->
+                     <div class="col-md-1">
+                         <button type="button" class="btn btn-default" aria-hidden="true" onclick="changeState()">
+                            <span id="play" class="glyphicon glyphicon-pause"></span>
+                         </button>
+                     </div>
+
+                    <!-- Progress bar -->
+                    <div class="col-md-8">
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                            <span class="sr-only">60% Complete</span>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- Elapsed time -->
+                     <div class="col-md-2">
+                        3:15
+                     </div>
+
+                    <!-- Skip button -->
+                     <div class="col-md-1">
+                         <button type="button" class="btn btn-default" onclick="goToNext()" aria-hidden="true">
+                            <span class="glyphicon glyphicon-forward"></span>
+                         </button>
+                     </div>
 
                  </div>
-
-                     <button type="button" class="btn btn-default" style="float:left" onclick="goToPrevious()">Play Previous</button>
-                     <button type="button" class="btn btn-default" style="float:left" onclick="stopVideo()">Stop Playlist</button>
-                     <button type="button" class="btn btn-default" style="float:right" onclick="goToNext()">Play Next</button>
-                     <button type="button" class="glyphicon glyphicon-play" aria-hidden="true" style="float:right" onclick="changeState()">Play/Pause Playlist</button>
-                     <span class="glyphicon glyphicon-play-circle" aria-hidden="true" onclick="playVideo()"></span>
-
              </div>
          </div>
     </div>
@@ -63,36 +97,51 @@
 <!-- Queue of YT videos -->
 <div id="queue-list">
     <div class="row">
-        <div class="col-lg-12 text-center">
-                 <div class="form-group" style="border: 2px solid black;text-align:center">
-
-                            <ul>
+        <div class="col-lg-12">
+             <div class="form-group">
+                    <!-- JavaScript and PHP loaded up next list-->
+                  <div id="next">
+                        <ul id="list"  style="list-style-type:none">
+                            <?php //$songlist = $data['songlist'];
+                                //for ($i = 1; $i < count($songlist); $i++){ ?>
                                 <li class="queue-item">
-                                    Video 1
-                                </li >
-
-                                <li class="queue-item">
-                                    Video 2
+                                    <div class="row">
+                                        <!-- YT Thumbnail and title -->
+                                        <div class="col-lg-8">
+                                            <div class="media">
+                                                <a class="media-left queue-thumb"
+                                                   href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
+                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                </a>
+                                                <div class="media-body media-middle">
+                                                    <a href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
+                                                        <span class="media-heading"><?php //echo $songlist[$i]->songname; ?></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Votes and upvote button -->
+                                        <div id="voting" class="btn-group pull-right" role="group" aria-label="...">
+                                          <button type="button" class="btn btn-default votes" disabled>
+                                            <span class="votes-number"><?php //echo $songlist[$i]->votes ; ?></span>
+                                          </button>
+                                          <button type="button" class="btn btn-default upvote">
+                                            <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                          </button>
+                                        </div>
+                                    </div>
                                 </li>
-                                <li class="queue-item">
-                                    Video 3
-                                </li>
-
-                            </ul>
-
-
+                           <?php //} ?>
+                        </ul>
+                  </div>
 
                         <!-- JavaScript loaded up next list-->
                       <div id="next"><ul id="list" style="list-style-type:none"></ul></div>
 
-                 </div>
+             </div>
         </div>
     </div>
 </div>
-
-
-
-
 
 <!-- OLD PAGE-->
 
@@ -154,8 +203,8 @@
           var player;
           function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-              height: '390',
-              width: '640',
+              height: '90',
+              width: '120',
               playerVars: {
                     controls:0,
                     showinfo:0,
@@ -225,8 +274,10 @@
             /** changes the state of the video from play to pause and back **/
           function changeState(){
             if(player.getPlayerState() == 1){
+                document.getElementById("play").className = "glyphicon glyphicon-play"
                 player.pauseVideo();
             }else{
+                document.getElementById("play").className = "glyphicon glyphicon-pause";
                 player.playVideo();
             }
           }

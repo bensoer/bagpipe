@@ -77,44 +77,43 @@
 <div id="queue-list">
     <div class="row">
         <div class="col-lg-12">
-                 <div class="form-group">
-                        <!-- JavaScript and PHP loaded up next list-->
-                      <div id="next">
-                            <ul id="list"  style="list-style-type:none">
-                                <?php $songlist = $data['songlist'];
-                                    for ($i = 1; $i < count($songlist); $i++){ ?>
-                                    <li class="queue-item">
-                                        <div class="row">
-                                            <!-- YT Thumbnail and title -->
-                                            <div class="col-lg-8">
-                                                <div class="media">
-                                                    <a class="media-left queue-thumb"
-                                                       href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
-                                                        <img src="http://img.youtube.com/vi/<?php echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+             <div class="form-group">
+                    <!-- JavaScript and PHP loaded up next list-->
+                  <div id="next">
+                        <ul id="list"  style="list-style-type:none">
+                            <?php $songlist = $data['songlist'];
+                                for ($i = 1; $i < count($songlist); $i++){ ?>
+                                <li class="queue-item">
+                                    <div class="row">
+                                        <!-- YT Thumbnail and title -->
+                                        <div class="col-lg-8">
+                                            <div class="media">
+                                                <a class="media-left queue-thumb"
+                                                   href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
+                                                    <img src="http://img.youtube.com/vi/<?php echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                </a>
+                                                <div class="media-body media-middle">
+                                                    <a href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
+                                                        <span class="media-heading"><?php echo $songlist[$i]->songname; ?></span>
                                                     </a>
-                                                    <div class="media-body media-middle">
-                                                        <a href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
-                                                            <span class="media-heading"><?php echo $songlist[$i]->songname; ?></span>
-                                                        </a>
-                                                    </div>
                                                 </div>
                                             </div>
-                                            <!-- Votes and upvote button -->
-                                            <div id="voting" class="btn-group pull-right" role="group" aria-label="...">
-                                              <button type="button" class="btn btn-default votes" disabled>
-                                                <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
-                                              </button>
-                                              <button type="button" class="btn btn-default upvote">
-                                                <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                                              </button>
-                                            </div>
                                         </div>
-                                    </li>
-                               <?php } ?>
-                            </ul>
-                      </div>
-
-                 </div>
+                                        <!-- Votes and upvote button -->
+                                        <div id="voting" class="btn-group pull-right" role="group" aria-label="...">
+                                          <button type="button" class="btn btn-default votes" disabled>
+                                            <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
+                                          </button>
+                                          <button type="button" class="btn btn-default upvote">
+                                            <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                          </button>
+                                        </div>
+                                    </div>
+                                </li>
+                           <?php } ?>
+                        </ul>
+                  </div>
+             </div>
         </div>
     </div>
 </div>

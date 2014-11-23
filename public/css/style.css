@@ -30,6 +30,10 @@ body {
     font-weight: 700;
 }
 
+a {
+    color: #DC6F2D;
+}
+
 /* Custom Button Styles */
 
 .btn-dark {
@@ -427,9 +431,17 @@ a.navbar-brand {
 }
 
 #current-song .row {
-    width: 100%;
     border-bottom: 1px solid #F4F5F7;
     padding: 5px 10px;
+}
+
+#current-song .media {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+#current-song .media-left {
+    padding-right: 0;
 }
 
 #current-song .progress,
@@ -438,11 +450,25 @@ a.navbar-brand {
 }
 
 #current-song .progress {
+    height: 5px;
+    background-color: #E9A47A;
+}
+
+#label {
+    font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    font-size: 1.5em;
+}
+
+    #current-song .progress-bar {
+        background-color: #DC6F2D;
+    }
+
+#controlbox .progress {
     height: 10px;
 }
 
 .votes {
-    border: 1px solid crimson;
+    border: 1px solid #F4F5F7;
     width: 30px;
     height: 30px;
 }
@@ -454,10 +480,41 @@ a.navbar-brand {
 
 #voting .btn {
     padding: 5px 0;
+    border: 1px solid #F4F5F7;
+}
+
+#controlbox .btn {
+    padding: 0;
+    border: none;
+}
+
+    #controlbox .btn-default:hover,
+    #controlbox .btn-default:active,
+    #controlbox .btn-default:focus {
+        background-color: #FFF;
+    }
+
+#controlbox .col-md-1 {
+    padding-left: 0;
+    padding-right: 0;
+    width: 2%;
+}
+
+#controlbox .col-md-2 {
+    padding-left: 0;
+    padding-right: 5px;
+    padding-top: 1px;
+    width: 5%;
+}
+
+#controlbox .col-md-8 {
+    padding-top: 6px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 91%;
 }
 
 .upvote {
-    border: 1px solid #ccc;
     width: 30px;
     height: 30px;
 }
