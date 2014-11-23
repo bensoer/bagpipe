@@ -42,6 +42,13 @@ class HomeController extends BaseController {
                     //get whole songlist
                     $songlist = DB::table('songlist')->where('session_token',$token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
 
+                    //if there are no songs, then guest shouldn't be allowed in as the playlist isn't ready
+                    if(empty($songlist)){
+                        return Redirect::back()
+                            ->with('error', "Sorry, but the playlist you are looking for isn't ready yet");
+                    }
+
+
                     //get the user and find what is the currently playing song
                     $user = DB::table('user')->where('session_token', $token)->first();
                     $currentlyPlaying = $user->currently_playing;

@@ -118,6 +118,12 @@ class YoutubeController extends BaseController {
         $user = DB::table('user')->where('session_token', $json->session_token)->first();
         $songData = DB::table('songlist')->select('songname')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();;
 
+        if(empty($user)){
+            return Response::json(array(
+                "success" => false,
+            ));
+        }
+
         $array = Array();
         for($i = $user->currently_playing+1 ; $i < count($songData); $i++){
             $array[] = $songData[$i]->songname;

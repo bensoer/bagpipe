@@ -75,7 +75,7 @@
 
                         <!-- JavaScript and PHP loaded up next list-->
                       <div id="next">
-                            <ul id="list" class="list-group" style="list-style-type:none">
+                            <ul id="list"  style="list-style-type:none">
                                 <?php $songlist = $data['songlist'];
                                     for ($i = 1; $i < count($songlist); $i++){ ?>
                                     <li class="queue-item"><?php echo $songlist[$i]->songname ?></li>
@@ -112,6 +112,7 @@
 
     function getUpNext(){
        var token = document.getElementById("token");
+       var list = document.getElementById('list');
        var json = {"session_token": token.innerHTML};
 
        var data = JSON.stringify(json);
@@ -120,19 +121,21 @@
        var post = $.post(url, {formData: data});
 
        post.done(function(result){
-            var json = JSON.parse(result);
-            //alert(json[0] + "\n" + json.length);
-            document.getElementById('list').innerHTML = "";
+            if(result.success == false){
+                location.reload();
+            }else{
+                var json = JSON.parse(result);
+                //alert(json[0] + "\n" + json.length);
+                list.innerHTML = '';
 
-           for(var i = 0; i< json.length ; i++){
-                var listItem=document.createElement("li");
-                listItem.className = "gueue-item";
-                listItem.innerHTML = json[i];
+               for(var i = 0; i < json.length ; i++){
+                    var listItem = document.createElement("li");
+                    listItem.className = "queue-item";
+                    var textnode = document.createTextNode(json[i]);
+                    listItem.appendChild(textnode);
+                    document.getElementById("list").appendChild(listItem);
 
-
-                //link.appendChild(textnode);
-
-                document.getElementById("list").appendChild(listItem);
+               }
            }
 
            //var lbl = document.getElementById("label");
