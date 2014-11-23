@@ -325,16 +325,16 @@ a.navbar-brand {
     padding: 5px 15px;
 }
 
-#token {
+#token-box {
     padding: 5px 15px;
 
 }
 
-    #token .input-group .form-control {
+    #token-box .input-group .form-control {
         width: auto;
     }
 
-    #token .input-group-addon, .input-group-btn {
+    #token-box .input-group-addon, .input-group-btn {
         width: auto;
     }
 
@@ -376,8 +376,10 @@ a.navbar-brand {
 
 /* Form */
 
-#searchbox .navbar-form {
-    width: 100%;
+@media (min-width: 768px) {
+    .navbar-form {
+        width: 100%;
+    }
 }
 
 #searchbox .form-group,

@@ -5,7 +5,7 @@
 
 @section('navies')
 
-<li id="token" class="page-scroll">
+<li id="token-box" class="page-scroll">
     <div class="input-group">
         <!-- TODO: when user joins, return with input update on join, refresh queue list -->
         <input type="text" class="form-control" maxlength="11" size="11"
@@ -14,7 +14,7 @@
         <span class="input-group-btn">
             <button class="btn btn-success" type="button">Join!</button>
         </span>
-    </div><!-- /input-group -->
+    </div>
 </li>
 
 @stop
@@ -35,6 +35,7 @@
 
 @section('control')
 
+
 <!-- Currently playing -->
 <div id="current-song">
     <div class="row">
@@ -43,7 +44,7 @@
                  <div class="form-group prev_next">
 
                         <h2>Now Playing</h2>
-                        <!-- JavaScript  nad PHP loaded now playing list -->
+                        <!-- JavaScript  and PHP loaded now playing list -->
                         <p id="label">
                             <a href="https://www.youtube.com/watch?v=<?php $songlist = $data['songlist'];
                                echo $songlist[0]->songid; ?>"
