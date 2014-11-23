@@ -11,7 +11,7 @@
 <li class="page-scroll">
     <div id="sharecode">
         <!-- TODO: Sharecode goes here -->
-        <span id="token">{{ $data['shareCode'] }}</span>
+        <span id="token-box">{{ $data['shareCode'] }}</span>
     </div>
 </li>
 
