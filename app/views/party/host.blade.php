@@ -29,9 +29,6 @@
 
 @stop
 
-
-
-
 @section('control')
 
 <!-- Currently playing -->
@@ -68,17 +65,17 @@
                      </div>
 
                     <!-- Progress bar -->
-                    <div class="col-md-8">
+                    <div id="progressBarID" class="col-md-8">
                         <div class="progress">
-                          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                          <div id="prog-bar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
                             <span class="sr-only">60% Complete</span>
                           </div>
                         </div>
                     </div>
 
                     <!-- Elapsed time -->
-                     <div class="col-md-2">
-                        3:15
+                     <div id="elapsedTimeID" class="col-md-2">
+                        <span id="yt-timer">0:00</span>
                      </div>
 
                     <!-- Skip button -->
@@ -111,7 +108,7 @@
                                             <div class="media">
                                                 <a class="media-left queue-thumb"
                                                    href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
-                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>hqdefault.jpg">
                                                 </a>
                                                 <div class="media-body media-middle">
                                                     <a href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
@@ -151,23 +148,16 @@
 
     <div class="row">
         <div class="col-lg-12 text-center">
-
-
             <div class="col-lg-12 center-block">
-
-                    <div class="form-group">
-                        <div class="col-xs-4 col-lg-offset-4">
-                            <!-- JavaScript loaded search title -->
-                            <h1 id="search_results_title"></h1></h1>
-                            <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
-                            <div id="search_list" class="list-group" style="text-align:left">
-
-
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <div class="col-xs-4 col-lg-offset-4">
+                        <!-- JavaScript loaded search title -->
+                        <h1 id="search_results_title"></h1></h1>
+                        <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
+                        <div id="search_list" class="list-group" style="text-align:left"></div>
+                    </div>
+                </div>
             </div>
-
-
         </div>
     </div>
     <!-- /.row -->
@@ -246,6 +236,41 @@
               //setTimeout(stopVideo, 6000);
               //done = true;
             //}
+
+            if ( event.data == YT.PlayerState.PLAYING ) {
+                var playerTotalTime = player.getDuration();
+                my_timer = setInterval( function ()
+                {
+                    var playerCurrentTime = player.getCurrentTime();
+                    var minutes = Math.floor((playerTotalTime / 60) -(playerCurrentTime / 60));
+                    var seconds = Math.floor(playerTotalTime - playerCurrentTime) % 60;
+                    var hours = Math.floor((playerTotalTime / 3600) -(playerCurrentTime / 3600));
+                    if (seconds < 0) {
+                        minutes = 0;
+                        seconds = 0;
+                    }
+
+                    var timeyWimey = "";
+                    if (hours > 0)
+                    {
+                        timeyWimey += "" + hours + ":" + (minutes < 10 ? "0" : "");
+                        document.getElementById("progressBarID").style.width = "89%";
+                        document.getElementById("elapsedTimeID").style.width = "7%";
+                    } else {
+                        document.getElementById("progressBarID").style.width = "91%";
+                        document.getElementById("elapsedTimeID").style.width = "5%";
+                    }
+                    timeyWimey += "" + minutes + ":" + (seconds < 10 ? "0" : "");
+                    timeyWimey += "" + seconds;
+
+                    var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
+                    document.getElementById("prog-bar").style.width = Math.floor(playerTimeDifference) + "%";
+                    document.getElementById("yt-timer").innerHTML = timeyWimey;
+                }, 1100 );
+            } else {
+                clearTimeout( my_timer );
+            }
+
             // 0 means the video has ended
             if(event.data == 0){
                 var videoId = loadNextVideo();
@@ -256,9 +281,9 @@
                     player.playVideo();
                     updateServerCurrentlyPlaying(soFarPlayed-1);
                 }
-
             }
           }
+
             /**
              * Starts the video Player
              */
@@ -284,6 +309,7 @@
 
           //returns the id of the next video
           function loadNextVideo(){
+            document.getElementById("yt-timer").innerHTML = "0:00";
             var nowPlayingLbl = document.getElementById('label');
             if(soFarPlayed >= videoIDs.length){
                 return null;
@@ -292,10 +318,7 @@
                     getSongs();
                     return videoIDs[soFarPlayed++];
                 }
-
           }
-
-
 
           function goToPrevious(){
                 if(soFarPlayed - 2 >= 0){
@@ -526,9 +549,6 @@
                 });
 
               });
-
-
-
 
         </script>
 
