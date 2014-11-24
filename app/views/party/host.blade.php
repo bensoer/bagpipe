@@ -216,6 +216,8 @@
         if(videoIDs.length == 0){
             document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
             document.getElementById('current-song').getElementsByClassName("row")[1].style.borderBottom = "0";
+        } else {
+            document.getElementById('current-song').getElementsByClassName("row")[1].style.borderBottom = "1px solid #e8e8e8";
         }
         //once its played all the videos should we stop or replay ??
     }else{
