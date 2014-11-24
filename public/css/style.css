@@ -345,6 +345,14 @@ a.navbar-brand {
     box-shadow: 0 2px 1px rgba(0,0,0,0.08);
 }
 
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #ffdfbe;
+}
+
+a:hover, a:focus {
+    color: #d35400;
+}
+
 @media (min-width: 1200px) {
     .container {
         width: 750px;
