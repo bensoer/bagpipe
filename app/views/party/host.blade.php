@@ -23,8 +23,21 @@
     <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
             <div class="form-group">
               <input type="text" class="form-control" placeholder="Search" name="search" id="search">
+              <p id="session_token" hidden>{{ $data['shareCode'] }}</p>
             </div>
     </form>
+</div>
+
+<!-- Search Results -->
+<div class = "row">
+    <div class="form-group">
+
+        <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
+        <div id="search_list" class="list-group" style="text-align:left">
+
+
+        </div>
+    </div>
 </div>
 
 @stop
@@ -140,28 +153,6 @@
     </div>
 </div>
 
-<!-- OLD PAGE-->
-
-
-
-<div class="container" style="min-height: 350px;">
-
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <div class="col-lg-12 center-block">
-                <div class="form-group">
-                    <div class="col-xs-4 col-lg-offset-4">
-                        <!-- JavaScript loaded search title -->
-                        <h1 id="search_results_title"></h1></h1>
-                        <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
-                        <div id="search_list" class="list-group" style="text-align:left"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /.row -->
-
 
 <!-- AJAX/JAVASCRIPT/YOUTUBE API -->
         <script>
@@ -185,7 +176,8 @@
           var firstScriptTag = document.getElementsByTagName('script')[0];
           firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-
+           var rate = 10*1000;
+           window.setInterval(resyncArrays, rate);
           getSongs();
 
           // 3. This function creates an <iframe> (and YouTube player)
@@ -380,12 +372,6 @@
                 event.preventDefault();
 
                 var submitBtn = document.getElementById("submit_search");
-                var searchResultsTitle = document.getElementById("search_results_title");
-
-                //submitBtn.disabled = true;
-                //submitBtn.innerHTML = "Searching...";
-
-
 
                 var $form = $( this ),
                     data = $form.serialize(),
@@ -426,21 +412,15 @@
 
                          var submitSelectedBtn = document.createElement("button");
                          submitSelectedBtn.innerHTML = "Add To List";
+                         submitSelectedBtn.className = "btn btn-default";
+
                          submitSelectedBtn.addEventListener("click", addToPlaylist);
 
                          document.getElementById("search_list").appendChild(submitSelectedBtn);
 
-
-
-
-
                     }else{
-                        window.alert("FAAIAILLUURREEEE");
+                        window.alert("A Serious Error Has Occurred. Please refresh the Host's page and try again");
                     }
-
-                    //submitBtn.disabled = false;
-                    //submitBtn.innerHTML = "Search";
-                    searchResultsTitle.innerHTML = "Results";
                 });
              });
              //}
@@ -481,11 +461,6 @@
                 //
 
                 list.innerHTML = "";
-                if(addedCount > 1){
-                    searchResultsTitle.innerHTML = "Songs Successfuly Added";
-                }else{
-                    searchResultsTitle.innerHTML = "Song Successfuly Added";
-                }
 
                 //means the video list was previously empty, so youtube has attempted to load and failed to load video
                 //so now that we have a/some song(s), trigger it to play the next video which is now the first song
@@ -494,12 +469,12 @@
                 }
 
                 //AJAX back new results to the Server
-                var token = document.getElementById("token");
+                var token = document.getElementById("session_token");
                 newSongs.push(token.innerHTML); //add token just to the end, hopefully does not carry over to videoID :S
 
-                for(var i = 0; i < newSongs.length; i++){
+               /* for(var i = 0; i < newSongs.length; i++){
                     alert(newSongs[i]);
-                }
+                }*/
 
                 var data = JSON.stringify(newSongs);
                 var url2 =  "/addToPlaylist";
@@ -518,7 +493,7 @@
 
              }
              function updateServerCurrentlyPlaying(number){
-                var token = document.getElementById("token");
+                var token = document.getElementById("session_token");
                 var json = {"currently_playing" :number, "session_token": token.innerHTML};
 
                 var data = JSON.stringify(json);
@@ -526,21 +501,60 @@
 
                 var post = $.post(url3, {formData: data});
 
-                post.done(function(result){
+               /* post.done(function(result){
                     if(result.success){
                         alert("Backend Updated");
                         alert(result.data);
 
                     }
+                });*/
+             }
+
+             function resyncArrays(){
+                var token = document.getElementById("session_token");
+                var json = {"session_token": token.innerHTML};
+                var data = JSON.stringify(json);
+                var url = "/getArrays";
+                var post = $.post(url, {formData: data});
+
+                post.done(function(result){
+                    if(result.success == false){
+                        //alert("no songs");
+                    }else{
+                        var json  = JSON.parse(result);
+
+                        while(videoIDs.length > 0){
+                            videoIDs.pop();
+                        }
+                        while(videoNames.length > 0){
+                            videoNames.pop();
+                        }
+
+
+                        for(var j = 0; j < json.length ; j++){
+                            videoIDs.push(json[j].songid);
+                            videoNames.push(json[j].songname);
+                            //alert("pushing: " + videoNames[j] + "\n ArrayName len: " + videoNames.length + "\n ArrayIDs len: " + videoIDs.length);
+                        }
+
+                        soFarPlayed--; //HACK
+                        getSongs(); //update the up next list with new updates
+                        soFarPlayed++; //HACK
+
+                    }
+
+
+
                 });
+
              }
 
             /** triggers when the window is about to be unloaded. removes all database and playlist session information **/
              $(window).bind('beforeunload', function() {
-                var token = document.getElementById("token");
+                var token = document.getElementById("session_token");
                 var json = {session_token: token.innerHTML};
                 var data = JSON.stringify(json);
-                var url3 = "/unloadDBSession"
+                var url3 = "/unloadDBSession";
                 var post = $.post(url3, {formData: data});
 
                 post.done(function(result){

@@ -97,4 +97,12 @@ Route::any('/getUpNext', [
     'as' => 'getUpNext',
     'uses' => 'YoutubeController@AJAXGetUpNextSongs'
 ]);
+Route::any('/getArrays', [
+    'as' => 'getArrays',
+    'uses' => 'YoutubeController@AJAXGetArrays'
+]);
+Route::any('/submitVote', [
+    'as' => 'submitVote',
+    'uses' => 'YoutubeController@AJAXSubmitVote'
+]);
 

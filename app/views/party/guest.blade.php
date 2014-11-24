@@ -25,11 +25,27 @@
 <div id="searchbox">
     <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search" name="search" id="search">
+              <input type="text" class="form-control" placeholder="Request A Song" name="search" id="search">
               <p hidden id="session_token"><?php echo $data['token']; ?></p>
             </div>
+
     </form>
 </div>
+
+<!-- Search Results -->
+<div class = "row">
+    <div class="form-group">
+
+        <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
+        <div id="search_list" class="list-group" style="text-align:left">
+
+
+        </div>
+    </div>
+</div>
+
+
+
 
 @stop
 
@@ -89,10 +105,10 @@
                                         <!-- YT Thumbnail and title -->
                                         <div class="col-lg-8">
                                             <div class="media">
-                                                <a class="media-left queue-thumb"
-                                                   href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
-                                                    <img src="http://img.youtube.com/vi/<?php echo $songlist[$i]->songid; ?>/hqdefault.jpg">
-                                                </a>
+                                               <!-- <a class="media-left queue-thumb"
+                                                   href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
+                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                </a>-->
                                                 <div class="media-body media-middle">
                                                     <a href="https://www.youtube.com/watch?v=<?php echo $songlist[$i]->songid; ?>" target="_blank">
                                                         <span class="media-heading"><?php echo $songlist[$i]->songname; ?></span>
@@ -105,7 +121,7 @@
                                           <button type="button" class="btn btn-default votes" disabled>
                                             <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
                                           </button>
-                                          <button type="button" class="btn btn-default upvote">
+                                          <button type="button" class="btn btn-default upvote" onclick="submitVote()" value="<?php echo $songlist[$i]->songid; ?>">
                                             <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                                           </button>
                                         </div>
@@ -121,8 +137,9 @@
 
 <script>
     var rate = 5 * 1000;
-    window.setTimeout(getCurrentlyPlaying, rate);
-    window.setTimeout(getUpNext, rate);
+    window.setInterval(getCurrentlyPlaying, rate);
+    window.setInterval(getUpNext, rate);
+    var alreadyVoted = new Array();
 
 
     function getCurrentlyPlaying(){
@@ -193,13 +210,13 @@
                             thumbLink.target = "_blank";
                             thumbLink.href="https://www.youtube.com/watch?v=" + json[1][i];
 
-                                var thumbImg = document.createElement("img");
-                                thumbImg.src = "http://img.youtube.com/vi/" + json[1][i] + "/hqdefault.jpg";
-                                thumbImg.style.height = "50px";
-                                thumbImg.style.width = "67px";
-                                thumbImg.style.verticalAlign = "middle";
+                               // var thumbImg = document.createElement("img");
+                               // thumbImg.src = "http://img.youtube.com/vi/" + json[1][i] + "/hqdefault.jpg";
+                               // thumbImg.style.height = "50px";
+                               // thumbImg.style.width = "67px";
+                               // thumbImg.style.verticalAlign = "middle";
 
-                            thumbLink.appendChild(thumbImg);
+                            //thumbLink.appendChild(thumbImg);
 
                             var mediaBodyDiv = document.createElement("div");
                             mediaBodyDiv.className = "media-body media-middle";
@@ -231,6 +248,19 @@
                         votingBtn.type = "button";
                         votingBtn.className = "btn btn-default votes";
                         votingBtn.disabled = true;
+
+                        //votingBtn.setAttribute("meta-id", json[1][i]);
+
+                       //why the fuck do onclicks not work...
+                        //votingBtn.onclick = submitVote;
+
+                        /*function(){
+                             var token = document.getElementById("session_token");
+                             var videoId = this.id;
+
+                             alert("token: " + token.innerHTML + "\n videoId: " + videoId);
+                        };*/
+
                             var votingSpan = document.createElement("span");
                             votingSpan.className = "votes-number";
                                 var voteNum = document.createTextNode(json[2][i]);
@@ -240,6 +270,12 @@
                         var upVoteBtn = document.createElement("button");
                         upVoteBtn.type = "button";
                         upVoteBtn.className = "btn btn-default upvote";
+
+                        //upVoteBtn.setAttribute("meta-id", json[1][i]);
+                        upVoteBtn.value = json[1][i];
+
+                        upVoteBtn.onclick = submitVote;
+
                             var upVoteSpan = document.createElement("span");
                             upVoteSpan.className = "upvote-icon glyphicon glyphicon-chevron-up";
                             upVoteSpan.setAttribute("aria-hidden", "true");
@@ -253,24 +289,113 @@
 
                     listItem.appendChild(rowDiv);
 
-
-
-
-
-
-
-                    //var textnode = document.createTextNode(json[i]);
-                    //listItem.appendChild(textnode);
                     document.getElementById("list").appendChild(listItem);
-
                }
            }
-
-           //var lbl = document.getElementById("label");
-           //lbl.innerHTML = result.name;
        });
-
     }
+
+
+    /** triggered when submitting a search for songs **/
+    $("#searchSong").submit(function(event){
+        event.preventDefault();
+
+        var $form = $( this ),
+            data = $form.serialize(),
+            url = "/searchSong";
+
+        var posting = $.post( url, { formData: data } );
+
+        posting.done(function(results){
+            if(results.success){
+                //window.alert("SUCCESSSSSS" + results.data);
+
+                var list = document.getElementById('search_list');
+                list.innerHTML = '';
+
+
+                for (var i=0; i < results.data[1].length; i++){
+
+                    var link=document.createElement("a");
+                    var textnode=document.createTextNode(results.data[1][i]);
+                    link.className = "list-group-item";
+                    link.href="#";
+
+                    var checkbox = document.createElement("input");
+                    checkbox.type="checkbox";
+                    //checkbox.innerHTML = results.data[1][i];
+                    checkbox.name = results.data[1][i];
+                    checkbox.value = results.data[3][i]; //store videoID in the checkbox value
+
+                    //checkbox.onClick future implementation allowing onclick adding of the song to the list
+
+                    link.appendChild(checkbox);
+                    link.appendChild(textnode);
+
+                    document.getElementById("search_list").appendChild(link);
+                 }
+
+                 var submitSelectedBtn = document.createElement("button");
+                 submitSelectedBtn.innerHTML = "Add To List";
+                 submitSelectedBtn.className = "btn btn-default";
+
+                 submitSelectedBtn.addEventListener("click", addToPlaylist);
+
+                 document.getElementById("search_list").appendChild(submitSelectedBtn);
+
+            }else{
+                window.alert("A Serious Error Has Occured. Please refresh the Host's page and try again");
+            }
+        });
+     });
+
+     //don't bother updating this list, it will be updated on the next sync call
+     function addToPlaylist(){
+
+        var results = document.getElementById("search_list").getElementsByTagName('INPUT');
+        var token = document.getElementById("session_token");
+
+        var requested = new Array();
+
+        for(var i = 0; i < results.length; i++){
+            if(results[i].type == "checkbox" && results[i].checked == true){
+                requested.push(results[i].value);
+            }
+        }
+
+        document.getElementById('search_list').innerHTML = ''; //clear the search list
+
+        requested.push(token.innerHTML);
+        var data = JSON.stringify(requested);
+        var url = "/addToPlaylist";
+        $.post(url, {formData: data });
+
+     }
+
+     function submitVote(){
+        var token = document.getElementById("session_token");
+        //var videoId = this.getAttribute("meta-id");
+        var videoId = this.getAttribute('value');
+
+        alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
+
+        for(var i = 0 ; i < alreadyVoted.length; i++){
+            if(videoId == alreadyVoted[i]){
+                alert("You have already voted for this song. You can not vote again");
+                return;
+            }
+        }
+
+        //alert(voteStatus);
+        //alert("token: " + token.innerHTML + "\n videoId: " + videoId);
+
+        var json = {"session_token": token.innerHTML, "videoid": videoId};
+        var data = JSON.stringify(json);
+        var url = "./submitVote";
+        var post = $.post(url, {formData: data});
+        alreadyVoted.push(videoId);
+
+     }
 
 </script>
 @stop
