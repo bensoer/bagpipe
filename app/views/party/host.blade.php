@@ -154,6 +154,27 @@
 </div>
 
 
+
+
+<div class="container" style="min-height: 350px;">
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="col-lg-12 center-block">
+                <div class="form-group">
+                    <div class="col-xs-4 col-lg-offset-4">
+                        <!-- JavaScript loaded search title -->
+                        <h1 id="search_results_title"></h1>
+                        <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
+                        <div id="search_list" class="list-group" style="text-align:left"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+
+
 <!-- AJAX/JAVASCRIPT/YOUTUBE API -->
         <script>
 
@@ -209,6 +230,7 @@
                 //alert("found its null");
                 if(videoIDs.length == 0){
                     document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
+                    document.getElementById('current-song').getElementsByClassName("row")[1].style.borderBottom = "0";
                 }
                 //once its played all the videos should we stop or replay ??
             }else{
@@ -461,6 +483,11 @@
                 //
 
                 list.innerHTML = "";
+                if(addedCount > 1){
+                    searchResultsTitle.innerHTML = "Songs Successfuly Added";
+                }else{
+                    searchResultsTitle.innerHTML = "Song Successfuly Added";
+                }
 
                 //means the video list was previously empty, so youtube has attempted to load and failed to load video
                 //so now that we have a/some song(s), trigger it to play the next video which is now the first song
