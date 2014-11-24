@@ -73,21 +73,6 @@
              </div>
          </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <div class="col-lg-12 center-block">
-                 <div class="form-group prev_next">
-
-                        <div class="progress">
-                          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                            <span class="sr-only">60% Complete</span>
-                          </div>
-                        </div>
-
-                 </div>
-             </div>
-         </div>
-    </div>
 </div>
 
 <!-- Queue of YT videos -->
@@ -121,8 +106,11 @@
                                           <button type="button" class="btn btn-default votes" disabled>
                                             <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
                                           </button>
-                                          <button type="button" class="btn btn-default upvote" onclick="submitVote()" value="<?php echo $songlist[$i]->songid; ?>">
-                                            <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                          <button type="button" class="btn btn-default upvote" onclick="submitVote()"
+                                            id="<?php echo $songlist[$i]->songid; ?>Button"
+                                            value="<?php echo $songlist[$i]->songid; ?>">
+                                            <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"
+                                                id="<?php echo $songlist[$i]->songid; ?>Icon"></span>
                                           </button>
                                         </div>
                                     </div>
@@ -376,12 +364,17 @@
         var token = document.getElementById("session_token");
         //var videoId = this.getAttribute("meta-id");
         var videoId = this.getAttribute('value');
-
+        var button = videoId + "Button";
+        var icon = videoId + "Icon";
         alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
 
         for(var i = 0 ; i < alreadyVoted.length; i++){
             if(videoId == alreadyVoted[i]){
                 alert("You have already voted for this song. You can not vote again");
+                //TODO: Change upvote color on button click
+                document.getElementById(button).disabled = true;
+                document.getElementById(icon).style.color = "#449d44";
+                        document.getElementById("h5-FJsYj1ckButton").style.color = "#449d44";
                 return;
             }
         }
@@ -394,7 +387,9 @@
         var url = "./submitVote";
         var post = $.post(url, {formData: data});
         alreadyVoted.push(videoId);
-
+        //TODO: Change upvote color on button click
+        document.getElementById(button).disabled = true;
+        document.getElementById(icon).style.color = "#449d44";
      }
 
 </script>

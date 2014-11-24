@@ -291,7 +291,7 @@
             /** changes the state of the video from play to pause and back **/
           function changeState(){
             if(player.getPlayerState() == 1){
-                document.getElementById("play").className = "glyphicon glyphicon-play"
+                document.getElementById("play").className = "glyphicon glyphicon-play";
                 player.pauseVideo();
             }else{
                 document.getElementById("play").className = "glyphicon glyphicon-pause";
