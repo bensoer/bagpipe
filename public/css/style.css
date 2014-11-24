@@ -420,6 +420,10 @@ a.navbar-brand {
     padding: 10px 18px;
 }
 
+#list li:last-child {
+    border-bottom: 0;
+}
+
 .queue-thumb {
     position: relative;
     width: 50px;
