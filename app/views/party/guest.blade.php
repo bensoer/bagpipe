@@ -7,13 +7,15 @@
 
 <li id="token-box" class="page-scroll">
     <div class="input-group">
-        <!-- TODO: when user joins, return with input update on join, refresh queue list -->
-        <input type="text" class="form-control" maxlength="11" size="11"
-               title="Join" placeholder="CODE HERE"
-               value="<?php echo $data['token']; ?>">
-        <span class="input-group-btn">
-            <button class="btn btn-success" type="button">Join!</button>
-        </span>
+        <form action="/guest" method="POST">
+            <!-- TODO: when user joins, return with input update on join, refresh queue list -->
+            <input type="text" class="form-control" maxlength="11" size="11"
+                   title="Join" placeholder="CODE HERE"
+                   value="<?php echo $data['token']; ?>" name="party_search">
+            <span class="input-group-btn">
+                <button class="btn btn-success" type="submit">Join!</button>
+            </span>
+        </form>
     </div>
 </li>
 
