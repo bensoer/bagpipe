@@ -105,4 +105,8 @@ Route::any('/submitVote', [
     'as' => 'submitVote',
     'uses' => 'YoutubeController@AJAXSubmitVote'
 ]);
+Route::any('/deleteSong' , [
+    'as' => 'deleteSong',
+    'uses' => 'YoutubeController@AJAXDeleteSong'
+]);
 

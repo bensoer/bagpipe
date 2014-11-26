@@ -112,7 +112,8 @@
                                             id="<?php echo $songlist[$i]->songid; ?>Button"
                                             value="<?php echo $songlist[$i]->songid; ?>">
                                             <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"
-                                                id="<?php echo $songlist[$i]->songid; ?>Icon"></span>
+                                                id="<?php echo $songlist[$i]->songid; ?>Icon" onclick="submitVote()"
+                                                value="<?php echo $songlist[$i]->songid; ?>"></span>
                                           </button>
                                         </div>
                                     </div>
@@ -128,6 +129,7 @@
 <script>
     var rate = 5 * 1000;
     window.setInterval(getCurrentlyPlaying, rate);
+    window.setTimeout(getCurrentlyPlaying,0);
     window.setInterval(getUpNext, rate);
     var alreadyVoted = new Array();
 
@@ -365,7 +367,7 @@
      function submitVote(){
         var token = document.getElementById("session_token");
         //var videoId = this.getAttribute("meta-id");
-        var videoId = this.getAttribute('value');
+        var videoId = this.value;
         var button = videoId + "Button";
         var icon = videoId + "Icon";
         alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
@@ -374,9 +376,11 @@
             if(videoId == alreadyVoted[i]){
                 alert("You have already voted for this song. You can not vote again");
                 //TODO: Change upvote color on button click
-                document.getElementById(button).disabled = true;
-                document.getElementById(icon).style.color = "#449d44";
-                        document.getElementById("h5-FJsYj1ckButton").style.color = "#449d44";
+               // document.getElementById(button).disabled = true;
+                //document.getElementById(icon).style.color = "#449d44";
+                  //      document.getElementById("h5-FJsYj1ckButton").style.color = "#449d44";
+                  this.disabled();
+                  this.style.color = "#449d44";
                 return;
             }
         }
@@ -390,8 +394,11 @@
         var post = $.post(url, {formData: data});
         alreadyVoted.push(videoId);
         //TODO: Change upvote color on button click
-        document.getElementById(button).disabled = true;
-        document.getElementById(icon).style.color = "#449d44";
+        //document.getElementById(button).disabled = true;
+        //document.getElementById(icon).style.color = "#449d44";
+        this.disabled = true;
+        this.style.color = "#449d44";
+        getUpNext();
      }
 
 </script>

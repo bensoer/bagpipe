@@ -365,7 +365,19 @@
         node.className = "queue-item";
         var textnode=document.createTextNode(videoNames[i]);
         node.appendChild(textnode);
-        document.getElementById("list").appendChild(node);
+
+        //need to create the layout dynamicaly and while creating it, assign the videoID to the
+        // "name" attribute of the button, that away can be retrieved when it is clicked
+        //the video id will be in the videoIDs array in the same i position as this cycle in the loop
+
+       // var delBtn = document.createElement("button");
+       // delBtn.name = videoIDs[i];
+       // delBtn.width = "200px";
+       // delBtn.height = "20px";
+       // delBtn.value = "Delete";
+
+        list.appendChild(node);
+     //  list.appendChild(delBtn);
 
 
        // li.innerHTML=li.innerHTML + videoNames[i];
@@ -556,6 +568,20 @@
 
         });
 
+     }
+
+     function deleteSong(){
+        var songid = this.name;
+        var token = document.getElementById("session_token");
+
+        var json = {session_token: token.innerHTML, songid: songid};
+        var data = JSON.stringify;
+        var url = "/deleteSong";
+        var post = $.post(url, {formData: data});
+
+        post.done(function(result){
+            resyncArrays(); //once we have deleted the songs, resync the arrays to re-order the songlist
+        });
      }
 
     /** triggers when the window is about to be unloaded. removes all database and playlist session information **/

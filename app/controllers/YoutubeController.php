@@ -220,6 +220,28 @@ class YoutubeController extends BaseController {
 
     }
 
+    public function AJAXDeleteSong(){
+        $inputData = Input::get("formData");
+        $json = json_decode($inputData);
+
+        DB::table('songlist')->where(array("session_token" => $json->session_token, "songid" => $json->songid))->delete();
+
+        $user = DB::table('user')->select("currently_playing")->where("session_token", $json->session_token)->get();
+
+        $newOrder = $this->reprioritise($json->session_token, $user[0]->currently_playing);
+
+        $count = 0;
+        foreach($newOrder as $songid){
+            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songid))->update(array('priority'=> $count));
+            $count++;
+        }
+
+        return Response::json(array(
+            "success" => true
+        ));
+
+    }
+
     public function AJAXAddSongs(){
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
         $inputData = Input::get('formData');
