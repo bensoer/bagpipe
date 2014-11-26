@@ -30,13 +30,15 @@
 
 <!-- Search Results -->
 <div class = "row">
+
     <div class="form-group">
 
         <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
-        <div id="search_list" class="list-group" style="text-align:left">
+        <div id="search_list" id="animate fadeInDown" class="list-group" style="text-align:left;padding-left:15px;padding-right:15px;">
 
 
         </div>
+
     </div>
 </div>
 
@@ -163,6 +165,7 @@
 <!-- AJAX/JAVASCRIPT/YOUTUBE API -->
 <script>
 
+    $('#search_list').addClass('animated fadeInDown');
 
     <?php //$videoIDs = $data['videoIDs'];
     //$videoNames = $data['videoNames']; ?>
@@ -415,6 +418,7 @@
                     var textnode=document.createTextNode(results.data[1][i]);
                     link.className = "list-group-item";
                     link.href="#";
+                    link.style.borderRadius = 0;
 
                     var checkbox = document.createElement("input");
                     checkbox.type="checkbox";
@@ -434,6 +438,8 @@
                  var submitSelectedBtn = document.createElement("button");
                  submitSelectedBtn.innerHTML = "Add To List";
                  submitSelectedBtn.className = "btn btn-default";
+                 submitSelectedBtn.borderRadius = 0;
+
 
                  submitSelectedBtn.addEventListener("click", addToPlaylist);
 
