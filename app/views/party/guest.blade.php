@@ -39,7 +39,7 @@
     <div class="form-group">
 
         <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
-        <div id="search_list" class="list-group" style="text-align:left">
+        <div id="search_list" class="list-group"  data-toggle="items" style="text-align:left">
 
 
         </div>
@@ -216,6 +216,7 @@
 
                                 var mediaBodyLink = document.createElement("a");
                                 mediaBodyLink.href="https://www.youtube.com/watch?v=" + json[1][i];
+                                mediaBodyLink.target = "_blank";
 
                                     var mediaBodySpan = document.createElement("span");
                                     mediaBodySpan.className = "media-heading";
@@ -312,16 +313,18 @@
                     var textnode=document.createTextNode(results.data[1][i]);
                     link.className = "list-group-item";
                     link.href="#";
+                    link.style.borderRadius = 0;
+                    link.id = results.data[3][i];
 
-                    var checkbox = document.createElement("input");
+                    /*var checkbox = document.createElement("input");
                     checkbox.type="checkbox";
                     //checkbox.innerHTML = results.data[1][i];
                     checkbox.name = results.data[1][i];
-                    checkbox.value = results.data[3][i]; //store videoID in the checkbox value
+                    checkbox.value = results.data[3][i]; //store videoID in the checkbox value*/
 
                     //checkbox.onClick future implementation allowing onclick adding of the song to the list
 
-                    link.appendChild(checkbox);
+                    /*link.appendChild(checkbox);*/
                     link.appendChild(textnode);
 
                     document.getElementById("search_list").appendChild(link);
@@ -344,14 +347,14 @@
      //don't bother updating this list, it will be updated on the next sync call
      function addToPlaylist(){
 
-        var results = document.getElementById("search_list").getElementsByTagName('INPUT');
+        var results = document.getElementById("search_list").getElementsByTagName('A');
         var token = document.getElementById("session_token");
 
         var requested = new Array();
 
         for(var i = 0; i < results.length; i++){
-            if(results[i].type == "checkbox" && results[i].checked == true){
-                requested.push(results[i].value);
+            if(results[i].classList.contains("active")){
+                requested.push(results[i].id);
             }
         }
 

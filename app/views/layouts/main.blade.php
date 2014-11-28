@@ -122,6 +122,7 @@
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
 
     <!-- Custom Theme JavaScript -->
+    <script src="{{ asset('js/listgroup.js') }}"></script>
     <script>
     // Closes the sidebar menu
     $("#menu-close").click(function(e) {

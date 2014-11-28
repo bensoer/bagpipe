@@ -34,7 +34,7 @@
     <div class="form-group">
 
         <!-- JavaScript loaded search list. Note: changes to list style need to be applied in JavaScript -->
-        <div id="search_list" id="animate fadeInDown" class="list-group" style="text-align:left;padding-left:15px;padding-right:15px;">
+        <div id="search_list" id="animate fadeInDown" class="list-group" data-toggle="items">
 
 
         </div>
@@ -374,6 +374,7 @@
         delBtn.href = "#";
         delBtn.onclick = deleteSong;
         delBtn.name = videoIDs[i];
+        delBtn.className = "deleteButton";
         delBtn.value = "Delete";
         delBtn.innerHTML = "Delete";
 
@@ -417,17 +418,18 @@
                     link.className = "list-group-item";
                     link.href="#";
                     link.style.borderRadius = 0;
+                    link.id = results.data[3][i];
 
-                    var checkbox = document.createElement("input");
+                    /*var checkbox = document.createElement("input");
                     checkbox.type="checkbox";
                     //checkbox.innerHTML = results.data[1][i];
                     checkbox.name = results.data[1][i];
-                    checkbox.value = results.data[3][i]; //store videoID in the checkbox value
+                    checkbox.value = results.data[3][i]; //store videoID in the checkbox value*/
 
                     //checkbox.onClick future implementation allowing onclick adding of the song to the list
 
                     //checkbox.appendChild(textnode);
-                    link.appendChild(checkbox);
+                    /*link.appendChild(checkbox);*/
                     link.appendChild(textnode);
 
                     document.getElementById("search_list").appendChild(link);
@@ -455,7 +457,7 @@
      */
      function addToPlaylist(){
         var newSongs = new Array();
-        var results = document.getElementById("search_list").getElementsByTagName('INPUT');
+        var results = document.getElementById("search_list").getElementsByTagName('A');
         var list = document.getElementById('search_list');
         var searchResultsTitle = document.getElementById('search_results_title');
         var wasEmptyBefore = false;
@@ -467,7 +469,7 @@
         }
 
         var addedCount = 0;
-        for(var i = 0; i <results.length; i++){
+        /*for(var i = 0; i <results.length; i++){
             if(results[i].type == "checkbox" && results[i].checked == true){
                 //value holds the videoID, name holds the video title
                 videoNames.push(results[i].name);
@@ -482,7 +484,25 @@
                 addedCount++;
 
             }
+        }*/
+
+        for(var i = 0; i <results.length; i++){
+            if(results[i].classList.contains("active")){
+                //id holds the videoID, innerHTML holds the video title
+                videoNames.push(results[i].innerHTML);
+                videoIDs.push(results[i].id);
+                newSongs.push(results[i].id);
+
+               //this is really bad..need to find more elegant
+                soFarPlayed--; //move back a step cuz soFarPlayed is 1 to far and getSongs needs to be 1 back to load bottom
+                getSongs();
+                soFarPlayed++; //move forward to realign where soFarPlayed supposed ot be for next song
+                //---------------------
+                addedCount++;
+
+            }
         }
+
         //
 
         list.innerHTML = "";
