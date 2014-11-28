@@ -228,7 +228,7 @@ class YoutubeController extends BaseController {
 
         $user = DB::table('user')->select("currently_playing")->where("session_token", $json->session_token)->get();
 
-        $newOrder = $this->reprioritise($json->session_token, $user[0]->currently_playing);
+        $newOrder = $this->reprioritize($json->session_token, $user[0]->currently_playing);
 
         $count = 0;
         foreach($newOrder as $songid){
@@ -237,7 +237,7 @@ class YoutubeController extends BaseController {
         }
 
         return Response::json(array(
-            "success" => true
+            "success" => true,
         ));
 
     }

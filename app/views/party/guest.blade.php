@@ -374,7 +374,7 @@
         var videoId = this.value;
         var button = videoId + "Button";
         var icon = videoId + "Icon";
-        alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
+        //alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
 
         for(var i = 0 ; i < alreadyVoted.length; i++){
             if(videoId == alreadyVoted[i]){

@@ -596,11 +596,13 @@
         var token = document.getElementById("session_token");
 
         var json = {session_token: token.innerHTML, songid: songid};
-        var data = JSON.stringify;
+        var data = JSON.stringify(json);
+        //alert(data);
         var url = "/deleteSong";
         var post = $.post(url, {formData: data});
 
         post.done(function(result){
+            //alert(JSON.stringify(result.data));
             resyncArrays(); //once we have deleted the songs, resync the arrays to re-order the songlist
         });
      }
