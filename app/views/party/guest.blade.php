@@ -27,7 +27,7 @@
 <div id="searchbox">
     <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Request A Song" name="search" id="search">
+              <input type="text" class="form-control" placeholder="Search Youtube" name="search" id="search">
               <p hidden id="session_token"><?php echo $data['token']; ?></p>
             </div>
 
@@ -365,6 +365,7 @@
         var url = "/addToPlaylist";
         $.post(url, {formData: data });
 
+        document.getElementById("search").value = "";
      }
 
      function submitVote(){

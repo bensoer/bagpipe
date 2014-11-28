@@ -110,6 +110,7 @@
                             <a target="_blank" href="https://www.ryansadio.com/">Ryan</a>
                         </li>
                     </ul>
+                    <p><a target="_blank" href="http://goo.gl/forms/YmGUUp4KV2">Leave us a Feedback!</a></p>
                     <p class="text-muted">Copyright &copy; Bagpipe 2014</p>
                 </div>
             </div>

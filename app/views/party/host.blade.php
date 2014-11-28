@@ -75,7 +75,7 @@
                     <!-- Play/Pause button -->
                      <div class="col-md-1">
                          <button type="button" class="btn btn-default" aria-hidden="true" onclick="changeState()">
-                            <span id="play" class="glyphicon glyphicon-pause"></span>
+                            <span id="play" class="glyphicon glyphicon-play"></span>
                          </button>
                      </div>
 
@@ -199,7 +199,7 @@
       playerVars: {
             controls:0,
             showinfo:0,
-            modestbranding:0,
+            modestbranding:1,
             iv_load_policy:3
       },
       events: {
@@ -232,13 +232,20 @@
   //    The function indicates that when playing a video (state=1),
   //    the player should play for six seconds and then stop.
     /** called when the Youtube Player has had an event occur **/
-  function onPlayerStateChange(event) {
-    //if (event.data == YT.PlayerState.PLAYING && !done) {
-      //setTimeout(stopVideo, 6000);
-      //done = true;
-    //}
-
-    if ( event.data == YT.PlayerState.PLAYING ) {
+  function onPlayerStateChange(event)
+  {
+    if( event.data == YT.PlayerState.ENDED ){
+        document.getElementById("play").className = "glyphicon glyphicon-play";
+        var videoId = loadNextVideo();
+        if(videoId == null){
+            //once played all the videos should we stop or replay ??
+        }else{
+            player.loadVideoById({videoId:videoId});
+            player.playVideo();
+            updateServerCurrentlyPlaying(soFarPlayed-1);
+        }
+    } else if ( event.data == YT.PlayerState.PLAYING ) {
+        document.getElementById("play").className = "glyphicon glyphicon-pause";
         var playerTotalTime = player.getDuration();
         my_timer = setInterval( function ()
         {
@@ -268,20 +275,10 @@
             document.getElementById("prog-bar").style.width = Math.floor(playerTimeDifference) + "%";
             document.getElementById("yt-timer").innerHTML = timeyWimey;
         }, 1100 );
+    } else if (event.data == YT.PlayerState.PAUSED ) {
+        document.getElementById("play").className = "glyphicon glyphicon-play";
     } else {
         clearTimeout( my_timer );
-    }
-
-    // 0 means the video has ended
-    if(event.data == 0){
-        var videoId = loadNextVideo();
-        if(videoId == null){
-            //once played all the videos should we stop or replay ??
-        }else{
-            player.loadVideoById({videoId:videoId});
-            player.playVideo();
-            updateServerCurrentlyPlaying(soFarPlayed-1);
-        }
     }
   }
 

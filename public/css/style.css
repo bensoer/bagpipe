@@ -524,6 +524,15 @@ a:hover, a:focus {
     background-color: #E9A47A;
 }
 
+#current-song .btn:focus,
+#current-song .btn:active:focus,
+#current-song .btn.active:focus,
+#current-song .btn.focus,
+#current-song .btn:active.focus,
+#current-song .btn.active.focus {
+    outline: none;
+}
+
 #next .media-body {
     height: 50px;
 }
