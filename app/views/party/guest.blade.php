@@ -9,7 +9,7 @@
     <div class="input-group">
         <form action="/guest" method="POST">
             <!-- TODO: when user joins, return with input update on join, refresh queue list -->
-            <input type="text" class="form-control" maxlength="11" size="11"
+            <input type="text" class="form-control" maxlength="13" size="13"
                    title="Join" placeholder="CODE HERE"
                    value="<?php echo $data['token']; ?>" name="party_search">
             <span class="input-group-btn">

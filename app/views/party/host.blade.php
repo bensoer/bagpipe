@@ -22,7 +22,7 @@
 <div id="searchbox">
     <form class="navbar-form navbar-left" role="search" method="POST" id="searchSong">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search" name="search" id="search">
+              <input type="text" class="form-control" placeholder="Search Youtube" name="search" id="search">
               <p id="session_token" hidden>{{ $data['shareCode'] }}</p>
             </div>
     </form>
@@ -123,7 +123,7 @@
                                             <div class="media">
                                                 <a class="media-left queue-thumb"
                                                    href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
-                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>hqdefault.jpg">
+                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
                                                 </a>
                                                 <div class="media-body media-middle">
                                                     <a href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
@@ -218,9 +218,6 @@
         //alert("found its null");
         if(videoIDs.length == 0){
             document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
-            document.getElementById('current-song').getElementsByClassName("row")[1].style.borderBottom = "0";
-        } else {
-            document.getElementById('current-song').getElementsByClassName("row")[1].style.borderBottom = "100%";
         }
         //once its played all the videos should we stop or replay ??
     }else{
@@ -246,9 +243,9 @@
         my_timer = setInterval( function ()
         {
             var playerCurrentTime = player.getCurrentTime();
-            var minutes = Math.floor((playerTotalTime / 60) -(playerCurrentTime / 60));
+            var minutes = Math.floor(((playerTotalTime / 60) - (playerCurrentTime / 60)) % 60);
             var seconds = Math.floor(playerTotalTime - playerCurrentTime) % 60;
-            var hours = Math.floor((playerTotalTime / 3600) -(playerCurrentTime / 3600));
+            var hours = Math.floor((playerTotalTime / 3600) - (playerCurrentTime / 3600));
             if (seconds < 0) {
                 minutes = 0;
                 seconds = 0;
@@ -373,14 +370,15 @@
         // "name" attribute of the button, that away can be retrieved when it is clicked
         //the video id will be in the videoIDs array in the same i position as this cycle in the loop
 
-       // var delBtn = document.createElement("button");
-       // delBtn.name = videoIDs[i];
-       // delBtn.width = "200px";
-       // delBtn.height = "20px";
-       // delBtn.value = "Delete";
+        var delBtn = document.createElement("a");
+        delBtn.href = "#";
+        delBtn.onclick = deleteSong;
+        delBtn.name = videoIDs[i];
+        delBtn.value = "Delete";
+        delBtn.innerHTML = "Delete";
 
         list.appendChild(node);
-     //  list.appendChild(delBtn);
+        node.appendChild(delBtn);
 
 
        // li.innerHTML=li.innerHTML + videoNames[i];
@@ -516,7 +514,7 @@
         });*/
 
 
-
+        document.getElementById("search").value = "";
 
      }
      function updateServerCurrentlyPlaying(number){
