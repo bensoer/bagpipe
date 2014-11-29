@@ -583,6 +583,10 @@
                 getSongs(); //update the up next list with new updates
                 soFarPlayed++; //HACK
 
+                if(player.getPlayerState() == 0 && videoIDs.length > 0){
+                    goToNext();
+                }
+
             }
 
 
