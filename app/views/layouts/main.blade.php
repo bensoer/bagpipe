@@ -26,7 +26,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 
-    <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
+    <!--<link href="{{ asset('css/animate.css') }}" rel="stylesheet">-->
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -54,8 +54,8 @@
 
 <body id="page-top" class="index">
 
-    {{--<!-- Navigation -->
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <!-- Navigation -->
+   <!-- <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
     <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
@@ -78,7 +78,7 @@
                 <a href="/#contact">Contact</a>
             </li>
         </ul>
-    </nav>--}}
+    </nav>-->
 
     {{-- Content--}}
     @yield('content')

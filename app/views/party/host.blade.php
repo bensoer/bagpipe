@@ -609,17 +609,21 @@
 
     /** triggers when the window is about to be unloaded. removes all database and playlist session information **/
      $(window).bind('beforeunload', function() {
-        var token = document.getElementById("session_token");
-        var json = {session_token: token.innerHTML};
-        var data = JSON.stringify(json);
-        var url3 = "/unloadDBSession";
-        var post = $.post(url3, {formData: data});
+        return "All content in your playlist will be lost and guests will be revoked access to the playlist"
 
-        post.done(function(result){
-            //alert("Decoupling Sent \n" + result.data);
+      });
 
-        });
+      $(window).bind('unload', function(){
+            var token = document.getElementById("session_token");
+                    var json = {session_token: token.innerHTML};
+                    var data = JSON.stringify(json);
+                    var url3 = "/unloadDBSession";
+                    var post = $.post(url3, {formData: data});
 
+                    post.done(function(result){
+                        //alert("Decoupling Sent \n" + result.data);
+
+                    });
       });
 
 </script>

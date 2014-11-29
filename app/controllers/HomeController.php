@@ -86,7 +86,7 @@ class HomeController extends BaseController {
     public function host()
     {
        $user = new User();
-        $token = str_random(10);
+        $token = strtoupper(str_random(10));
         $user->session_token = $token;
         $user->save();
 
