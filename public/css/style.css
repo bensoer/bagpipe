@@ -621,3 +621,7 @@ a:hover, a:focus {
 #voting {
     padding: 10px 10px;
 }
+
+.jumbotron {
+    margin-top: 15%;
+}
