@@ -108,7 +108,7 @@
                                           <button type="button" class="btn btn-default votes" disabled>
                                             <span class="votes-number"><?php echo $songlist[$i]->votes ; ?></span>
                                           </button>
-                                          <button type="button" class="btn btn-default upvote" onclick="submitVote()"
+                                          <button type="button" class="btn btn-default upvote"
                                             id="<?php echo $songlist[$i]->songid; ?>Button"
                                             value="<?php echo $songlist[$i]->songid; ?>">
                                             <span class="upvote-icon glyphicon glyphicon-chevron-up" aria-hidden="true"
@@ -376,33 +376,38 @@
         var icon = videoId + "Icon";
         //alert("token: " + token.innerHTML + "\n" + "videoId : " + videoId);
 
+        var isVoted = false;
+        //alert("already voted length: " + alreadyVoted.length);
         for(var i = 0 ; i < alreadyVoted.length; i++){
-            if(videoId == alreadyVoted[i]){
+            if(videoId === alreadyVoted[i]){
                 alert("You have already voted for this song. You can not vote again");
                 //TODO: Change upvote color on button click
                // document.getElementById(button).disabled = true;
                 //document.getElementById(icon).style.color = "#449d44";
                   //      document.getElementById("h5-FJsYj1ckButton").style.color = "#449d44";
-                  this.disabled();
-                  this.style.color = "#449d44";
-                return;
+                  //this.disabled();
+                  //this.style.color = "#449d44";
+                isVoted = true;
             }
         }
 
+        if(!isVoted){
         //alert(voteStatus);
-        //alert("token: " + token.innerHTML + "\n videoId: " + videoId);
+            //alert("token: " + token.innerHTML + "\n videoId: " + videoId);
 
-        var json = {"session_token": token.innerHTML, "videoid": videoId};
-        var data = JSON.stringify(json);
-        var url = "./submitVote";
-        var post = $.post(url, {formData: data});
-        alreadyVoted.push(videoId);
-        //TODO: Change upvote color on button click
-        //document.getElementById(button).disabled = true;
-        //document.getElementById(icon).style.color = "#449d44";
-        this.disabled = true;
-        this.style.color = "#449d44";
-        getUpNext();
+            var json = {"session_token": token.innerHTML, "videoid": videoId};
+            var data = JSON.stringify(json);
+            var url = "./submitVote";
+            var post = $.post(url, {formData: data});
+            alreadyVoted.push(videoId);
+            //TODO: Change upvote color on button click
+            //document.getElementById(button).disabled = true;
+            //document.getElementById(icon).style.color = "#449d44";
+            //this.disabled = true;
+           // this.style.color = "#449d44";
+            getUpNext();
+        }
+
      }
 
 </script>
