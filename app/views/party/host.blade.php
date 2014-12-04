@@ -123,7 +123,7 @@
                                             <div class="media">
                                                 <a class="media-left queue-thumb"
                                                    href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
-                                                    <img src="http://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
+                                                    <img src="https://img.youtube.com/vi/<?php //echo $songlist[$i]->songid; ?>/hqdefault.jpg">
                                                 </a>
                                                 <div class="media-body media-middle">
                                                     <a href="https://www.youtube.com/watch?v=<?php //echo $songlist[$i]->songid; ?>" target="_blank">
