@@ -50,6 +50,7 @@
     <!-- jQuery -->
         <script src="{{ asset('js/jquery.js') }}"></script>
 
+
 </head>
 
 <body id="page-top" class="index">
