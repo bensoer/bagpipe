@@ -51,6 +51,10 @@
         <script src="{{ asset('js/jquery.js') }}"></script>
 
 
+    <script src="{{ asset('js/Playlist.js') }}"></script>
+    <script src="{{ asset('js/Song.js') }}"></script>
+
+
 </head>
 
 <body id="page-top" class="index">
@@ -155,6 +159,8 @@
         });
     });
     </script>
+
+
 
 </body>
 

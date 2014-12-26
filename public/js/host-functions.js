@@ -1,6 +1,7 @@
 
 <!-- AJAX/JAVASCRIPT/YOUTUBE API -->
 
+var playlist = new Playlist();
 
 $('#search_list').addClass('animated fadeInDown');
 
@@ -22,8 +23,10 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var rate = 10*1000;
-window.setInterval(resyncArrays, rate);
+//window.setInterval(resyncArrays, rate);
 getSongs();
+
+
 
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
@@ -47,6 +50,20 @@ function onYouTubeIframeAPIReady() {
 
 /** Called by The Youtube Player is ready **/
 function onPlayerReady(event) {
+
+    var nowPlaying = playlist.getNowPlaying();
+
+    if(nowPlaying == null){
+        document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
+    }else{
+        updateDisplayLists();
+        player.loadVideoById({videoId:nowPlaying.getID()});
+        player.playVideo();
+    }
+}
+
+
+/* OLD WAY
     //alert("player ready");
     var videoId = loadNextVideo();
     //alert("got video id");
@@ -63,97 +80,131 @@ function onPlayerReady(event) {
     }
 
     }
+*/
 
 // 5. The API calls this function when the player's state changes.
 //    The function indicates that when playing a video (state=1),
 //    the player should play for six seconds and then stop.
 /** called when the Youtube Player has had an event occur **/
-function onPlayerStateChange(event)
-  {
-      if( event.data == YT.PlayerState.ENDED ){
-      document.getElementById("play").className = "glyphicon glyphicon-play";
-      var videoId = loadNextVideo();
-      if(videoId == null){
-      //once played all the videos should we stop or replay ??
-      }else{
-      player.loadVideoById({videoId:videoId});
-      player.playVideo();
-      updateServerCurrentlyPlaying(soFarPlayed-1);
-      }
-      } else if ( event.data == YT.PlayerState.PLAYING ) {
-      document.getElementById("play").className = "glyphicon glyphicon-pause";
-      var playerTotalTime = player.getDuration();
-      my_timer = setInterval( function ()
-      {
-      var playerCurrentTime = player.getCurrentTime();
-      var minutes = Math.floor(((playerTotalTime / 60) - (playerCurrentTime / 60)) % 60);
-      var seconds = Math.floor(playerTotalTime - playerCurrentTime) % 60;
-      var hours = Math.floor((playerTotalTime / 3600) - (playerCurrentTime / 3600));
-      if (seconds < 0) {
-      minutes = 0;
-      seconds = 0;
-      }
+function onPlayerStateChange(event) {
 
-      var timeyWimey = "";
-      if (hours > 0)
-      {
-      timeyWimey += "" + hours + ":" + (minutes < 10 ? "0" : "");
-      document.getElementById("progressBarID").style.width = "89%";
-      document.getElementById("elapsedTimeID").style.width = "7%";
-      } else {
-      document.getElementById("progressBarID").style.width = "91%";
-      document.getElementById("elapsedTimeID").style.width = "5%";
-      }
-      timeyWimey += "" + minutes + ":" + (seconds < 10 ? "0" : "");
-      timeyWimey += "" + seconds;
+    if (event.data == YT.PlayerState.ENDED) {
+        document.getElementById("play").className = "glyphicon glyphicon-play";
 
-      var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
-      document.getElementById("prog-bar").style.width = Math.floor(playerTimeDifference) + "%";
-      document.getElementById("yt-timer").innerHTML = timeyWimey;
-      }, 1100 );
-      } else if (event.data == YT.PlayerState.PAUSED ) {
-      document.getElementById("play").className = "glyphicon glyphicon-play";
-      } else {
-      clearTimeout( my_timer );
-      }
-      }
+        var nextSong = playlist.getNextSong();
+
+        if (nextSong == null) {
+            //once played all the videos should we stop or replay ??
+        } else {
+            updateDisplayLists();
+            player.loadVideoById({videoId: nextSong.getID()});
+            player.playVideo();
+        }
+
+    } else if (event.data == YT.PlayerState.PLAYING) {
+        document.getElementById("play").className = "glyphicon glyphicon-pause";
+        var playerTotalTime = player.getDuration();
+        my_timer = setInterval(function () {
+
+
+
+            //OLD WAY
+            /* if( event.data == YT.PlayerState.ENDED ){
+             document.getElementById("play").className = "glyphicon glyphicon-play";
+             var videoId = loadNextVideo();
+             if(videoId == null){
+             //once played all the videos should we stop or replay ??
+             }else{
+             player.loadVideoById({videoId:videoId});
+             player.playVideo();
+             updateServerCurrentlyPlaying(soFarPlayed-1);
+             }
+             } else if ( event.data == YT.PlayerState.PLAYING ) {
+             document.getElementById("play").className = "glyphicon glyphicon-pause";
+             var playerTotalTime = player.getDuration();
+             my_timer = setInterval( function ()
+             {*/
+
+
+            var playerCurrentTime = player.getCurrentTime();
+            var minutes = Math.floor(((playerTotalTime / 60) - (playerCurrentTime / 60)) % 60);
+            var seconds = Math.floor(playerTotalTime - playerCurrentTime) % 60;
+            var hours = Math.floor((playerTotalTime / 3600) - (playerCurrentTime / 3600));
+            if (seconds < 0) {
+                minutes = 0;
+                seconds = 0;
+            }
+
+            var timeyWimey = "";
+            if (hours > 0) {
+                timeyWimey += "" + hours + ":" + (minutes < 10 ? "0" : "");
+                document.getElementById("progressBarID").style.width = "89%";
+                document.getElementById("elapsedTimeID").style.width = "7%";
+            } else {
+                document.getElementById("progressBarID").style.width = "91%";
+                document.getElementById("elapsedTimeID").style.width = "5%";
+            }
+            timeyWimey += "" + minutes + ":" + (seconds < 10 ? "0" : "");
+            timeyWimey += "" + seconds;
+
+            var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
+            document.getElementById("prog-bar").style.width = Math.floor(playerTimeDifference) + "%";
+            document.getElementById("yt-timer").innerHTML = timeyWimey;
+        }, 1100);
+    } else if (event.data == YT.PlayerState.PAUSED) {
+        document.getElementById("play").className = "glyphicon glyphicon-play";
+    } else {
+        clearTimeout(my_timer);
+    }
+
+}
+/**
+ * Updates the upNext and the nowPlaying lists GUI's
+ */
+function updateDisplayLists(){
+    document.getElementById('label').innerHTML = playlist.getNowPlaying().getName();
+    getSongs();
+}
 
 /**
 * Starts the video Player
 */
 function stopVideo(){
     player.pauseVideo();
-    }
+}
+
 /**
 * Stops the video Player
 */
 function playVideo(){
     player.playVideo();
-    }
+}
+
 /** changes the state of the video from play to pause and back **/
 function changeState(){
     if(player.getPlayerState() == 1){
-    document.getElementById("play").className = "glyphicon glyphicon-play";
-    player.pauseVideo();
+        document.getElementById("play").className = "glyphicon glyphicon-play";
+        player.pauseVideo();
     }else{
-    document.getElementById("play").className = "glyphicon glyphicon-pause";
-    player.playVideo();
+        document.getElementById("play").className = "glyphicon glyphicon-pause";
+        player.playVideo();
     }
-    }
-
+}
+/*
 //returns the id of the next video
 function loadNextVideo(){
     document.getElementById("yt-timer").innerHTML = "0:00";
     var nowPlayingLbl = document.getElementById('label');
     if(soFarPlayed >= videoIDs.length){
-    return null;
+        return null;
     }else{
-    nowPlayingLbl.innerHTML = videoNames[soFarPlayed];
-    getSongs();
-    return videoIDs[soFarPlayed++];
+        nowPlayingLbl.innerHTML = videoNames[soFarPlayed];
+        getSongs();
+        return videoIDs[soFarPlayed++];
     }
-    }
-
+}
+*/
+/*
 function goToPrevious(){
     if(soFarPlayed - 2 >= 0){
     soFarPlayed = soFarPlayed - 2;
@@ -168,21 +219,42 @@ function goToPrevious(){
     }
     }
     }
+*/
+function goToNext() {
+    var song = playlist.getNextSong();
 
-function goToNext(){
-    var videoId = loadNextVideo();
-    if(videoId == null){
-    //alert("Got caught in here");
-    //once played all the videos should we stop or replay ??
-    }else{
-    player.loadVideoById({videoId:videoId});
-    player.playVideo();
-    updateServerCurrentlyPlaying(soFarPlayed-1);
+
+    if (song == null) {
+        //no song to play
+    } else {
+        //alert(song.getName());
+        updateDisplayLists();
+        player.loadVideoById({videoId: song.getID()});
+        player.playVideo();
     }
-    }
+
+
+    /*
+     var videoId = loadNextVideo();
+     if(videoId == null){
+     //alert("Got caught in here");
+     //once played all the videos should we stop or replay ??
+     }else{
+     player.loadVideoById({videoId:videoId});
+     player.playVideo();
+     var song = playlist.getNextSong();
+
+     alert(song.getName());
+
+     updateServerCurrentlyPlaying(soFarPlayed-1);
+
+     }
+     }
+     */
+}
 
 /**
-* Loads songs from the videoNames array and builds the Up Next list from it
+* Loads the upNext list
 */
 function getSongs(){
 
@@ -190,36 +262,63 @@ function getSongs(){
     var list = document.getElementById('list');
     list.innerHTML = '';
 
+    var upNextList = playlist.getUpNext();
 
 
+    alert("TO Be Played: \n" + upNextList);
+
+    for(var i = 0; i < upNextList.length; ++i){
+        var node=document.createElement("li");
+        node.className = "queue-item";
+        var textnode=document.createTextNode(upNextList[i].getName());
+        node.appendChild(textnode);
+
+        //need to create the layout dynamicaly and while creating it, assign the videoID to the
+        // "name" attribute of the button, that away can be retrieved when it is clicked
+        //the video id will be in the videoIDs array in the same i position as this cycle in the loop
+
+        var delBtn = document.createElement("a");
+        delBtn.href = "#";
+        delBtn.onclick = deleteSong;
+        delBtn.name = upNextList[i].getID();
+        delBtn.className = "deleteButton";
+        delBtn.value = "Delete";
+        delBtn.innerHTML = "Delete";
+
+        list.appendChild(node);
+        node.appendChild(delBtn);
+    }
+
+/* OLD SETUP
     for (var i=soFarPlayed+1; i < videoNames.length; i++){
 
-    var node=document.createElement("li");
-    node.className = "queue-item";
-    var textnode=document.createTextNode(videoNames[i]);
-    node.appendChild(textnode);
+        var node=document.createElement("li");
+        node.className = "queue-item";
+        var textnode=document.createTextNode(videoNames[i]);
+        node.appendChild(textnode);
 
-    //need to create the layout dynamicaly and while creating it, assign the videoID to the
-    // "name" attribute of the button, that away can be retrieved when it is clicked
-    //the video id will be in the videoIDs array in the same i position as this cycle in the loop
+        //need to create the layout dynamicaly and while creating it, assign the videoID to the
+        // "name" attribute of the button, that away can be retrieved when it is clicked
+        //the video id will be in the videoIDs array in the same i position as this cycle in the loop
 
-    var delBtn = document.createElement("a");
-    delBtn.href = "#";
-    delBtn.onclick = deleteSong;
-    delBtn.name = videoIDs[i];
-    delBtn.className = "deleteButton";
-    delBtn.value = "Delete";
-    delBtn.innerHTML = "Delete";
+        var delBtn = document.createElement("a");
+        delBtn.href = "#";
+        delBtn.onclick = deleteSong;
+        delBtn.name = videoIDs[i];
+        delBtn.className = "deleteButton";
+        delBtn.value = "Delete";
+        delBtn.innerHTML = "Delete";
 
-    list.appendChild(node);
-    node.appendChild(delBtn);
+        list.appendChild(node);
+        node.appendChild(delBtn);
 
 
-    // li.innerHTML=li.innerHTML + videoNames[i];
-    //list.appendChild(li);
+        // li.innerHTML=li.innerHTML + videoNames[i];
+        //list.appendChild(li);
 
     }
-    }
+*/
+}
 
 /** triggered when submitting a search for songs **/
 $("#searchSong").submit(function(event){
@@ -292,16 +391,20 @@ function addToPlaylist(){
     var newSongs = new Array();
     var results = document.getElementById("search_list").getElementsByTagName('A');
     var list = document.getElementById('search_list');
-    var searchResultsTitle = document.getElementById('search_results_title');
+    //var searchResultsTitle = document.getElementById('search_results_title');
     var wasEmptyBefore = false;
 
     //determine whether this is the first time the playlist is being added to
-    if(videoIDs.length == 0){
+    //if(videoIDs.length == 0){
     //alert("was empty..");
-    wasEmptyBefore = true;
+    //wasEmptyBefore = true;
+    //}
+
+    if(playlist.isEmpty()){
+        wasEmptyBefore = true;
     }
 
-    var addedCount = 0;
+    //var addedCount = 0;
     /*for(var i = 0; i <results.length; i++){
      if(results[i].type == "checkbox" && results[i].checked == true){
      //value holds the videoID, name holds the video title
@@ -319,21 +422,28 @@ function addToPlaylist(){
      }
      }*/
 
+
     for(var i = 0; i <results.length; i++){
-    if(results[i].classList.contains("active")){
-    //id holds the videoID, innerHTML holds the video title
-    videoNames.push(results[i].innerHTML);
-    videoIDs.push(results[i].id);
-    newSongs.push(results[i].id);
+        if(results[i].classList.contains("active")){
+            //id holds the videoID, innerHTML holds the video title
+            //playlist.addToPlaylist(results[i].innerHTML);
+            //videoNames.push(results[i].innerHTML);
+            //videoIDs.push(results[i].id);
+            //newSongs.push(results[i].id);
+            playlist.addToPlaylist(new Song(results[i].innerHTML, results[i].id));
 
-    //this is really bad..need to find more elegant
-    soFarPlayed--; //move back a step cuz soFarPlayed is 1 to far and getSongs needs to be 1 back to load bottom
-    getSongs();
-    soFarPlayed++; //move forward to realign where soFarPlayed supposed ot be for next song
-    //---------------------
-    addedCount++;
+            //alert("Playlist Length: " + playlist.getLength());
 
-    }
+            //alert("Playlist: \n" + playlist.getPlaylist());
+
+            //this is really bad..need to find more elegant
+            //soFarPlayed--; //move back a step cuz soFarPlayed is 1 to far and getSongs needs to be 1 back to load bottom
+            //getSongs();
+            //soFarPlayed++; //move forward to realign where soFarPlayed supposed ot be for next song
+            //---------------------
+            //addedCount++;
+
+        }
     }
 
     //
@@ -343,20 +453,22 @@ function addToPlaylist(){
     //means the video list was previously empty, so youtube has attempted to load and failed to load video
     //so now that we have a/some song(s), trigger it to play the next video which is now the first song
     if(wasEmptyBefore){
-    goToNext();
+        onPlayerReady(); // semi-hack
+    }else{
+        updateDisplayLists();
     }
 
     //AJAX back new results to the Server
-    var token = document.getElementById("session_token");
-    newSongs.push(token.innerHTML); //add token just to the end, hopefully does not carry over to videoID :S
+    //var token = document.getElementById("session_token");
+    //newSongs.push(token.innerHTML); //add token just to the end, hopefully does not carry over to videoID :S
 
     /* for(var i = 0; i < newSongs.length; i++){
      alert(newSongs[i]);
      }*/
 
-    var data = JSON.stringify(newSongs);
-    var url2 =  "/addToPlaylist";
-    var post = $.post( url2, { formData: data } );
+    //var data = JSON.stringify(newSongs);
+    //var url2 =  "/addToPlaylist";
+    //var post = $.post( url2, { formData: data } );
 
     /* post.done(function(result){
      if(result.success){
