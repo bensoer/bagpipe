@@ -333,5 +333,19 @@ class YoutubeController extends BaseController {
 
     }
 
+    public function AJAXSync(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        DB::table('user')->where(array('session_token' => $json->session_token))->update(array('currently_playing'=> $json->currently_playing));
+
+
+        return Response::json(array(
+            'success' => true,
+            'session_token' => $json->session_token,
+
+        ));
+    }
+
 
 }
