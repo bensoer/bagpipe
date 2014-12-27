@@ -3,7 +3,7 @@
 
 // create a playlist on page load
 var token = document.getElementById('session_token').innerHTML;
-var playlist = new Playlist(3*1000, token);
+var playlist = new Playlist(5*1000, token);
 //window.setInterval(playlist.updateServer, 3*1000);
 
 // 2. This code loads the IFrame Player API code asynchronously.
@@ -273,12 +273,15 @@ function addToPlaylist(){
         wasEmptyBefore = true;
     }
 
+    var array = new Array();
     for(var i = 0; i <results.length; i++){
         if(results[i].classList.contains("active")){
             //for each item in the results, if checked, add to the playlist
-            playlist.addToPlaylist(new Song(results[i].innerHTML, results[i].id));
+            array.push(new Song(results[i].innerHTML, results[i].id));
         }
     }
+
+    playlist.addToPlaylist(array);
 
 
     list.innerHTML = "";

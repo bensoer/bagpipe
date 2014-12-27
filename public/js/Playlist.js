@@ -14,7 +14,7 @@ function Playlist(rate, sessionToken){
     //setInterval passes a "this" that referres to the window, not to our object, so we need ot make out own this
     //and pass it
     var _this = this;
-    setInterval(function(){_this.updateServer()}, rate);
+    setInterval(function(){_this.updateArray()}, rate);
 
 };
 
@@ -44,7 +44,7 @@ Playlist.prototype.getUpNext = function(){
 /* Returns the next item in the playlist to be played. Returns null if there is nothing next */
 Playlist.prototype.getNextToBePlayed = function(){
 
-    alert("now playing in getNext: " + this.nowPlayingIndex);
+    //alert("now playing in getNext: " + this.nowPlayingIndex);
 
     if(this.nowPlayingIndex + 1 > this.fullPlaylist.length){
         return null;
@@ -58,25 +58,37 @@ Playlist.prototype.getNextToBePlayed = function(){
     Returns null if there is nothing next */
 Playlist.prototype.getNextSong = function(){
     var nextSong = this.getNextToBePlayed();
-    this.nowPlayingIndex++;
+
+    if(nextSong != null){
+        this.nowPlayingIndex++;
+
+        var json = {
+            "session_token" : this.sessionToken,
+            "currently_playing": this.nowPlayingIndex
+        }
+        var url = "/updateCurrent";
+        this.updateServer(url,json);
+    }
     return nextSong;
 }
 
-Playlist.prototype.addToPlaylist = function(song){
-    this.fullPlaylist.push(song);
-}
+Playlist.prototype.addToPlaylist = function(newSongsArray){
 
-Playlist.prototype.updateServerPlaylist = function(){
-
-    var json = {"session_token" : this.sessionToken, "playlist" : this.fullPlaylist};
+    for(var i = 0; i < newSongsArray.length; ++i){
+        this.fullPlaylist.push(newSongsArray[i]);
+    }
 
 
-    var data = JSON.stringify(json);
-    var url = '/AddToPlaylist';
+    //update server
+    var json = {
+        "session_token" : this.sessionToken,
+        "new_songs" : newSongsArray,
+        "num_new_songs" : newSongsArray.length
+    }
+    var url = "/addToPlaylist";
 
-    alert(data);
+    this.updateServer(url,json);
 
-    var post = $.post(url, {formData: data});
 }
 
 Playlist.prototype.getLength = function(){
@@ -93,36 +105,76 @@ Playlist.prototype.isEmpty = function(){
 
 Playlist.prototype.deleteSong = function(songID){
 
+    var song;
+
     for(var i = 0; i < this.fullPlaylist.length; ++i){
         if(this.fullPlaylist[i].getID() == songID){
             alert('deleting: ' + this.fullPlaylist[i].getName());
+            song = this.fullPlaylist[i];
             this.fullPlaylist.splice(i,1); //deletes 1 item at position i
-            return;
+            break;
         }
     }
+    this.sortPlaylist();
 
+    var json = {
+        "session_token" : this.sessionToken,
+        "deleted_song_id" : song.getID(),
+        "deleted_song_name" : song.getName(),
+        "new_song_order" : this.fullPlaylist
+    }
+    var url = "/deleteSong";
+
+    this.updateServer(url, json);
+
+
+}
+
+Playlist.prototype.sortPlaylist = function(){
+
+    for(var i = this.nowPlayingIndex + 1 ; i < this.fullPlaylist.length ; ++i){
+        for(var j = i+1; j < this.fullPlaylist.length; ++j){
+            if(this.fullPlaylist[i-1].getVoteCount() < this.fullPlaylist[i].getVoteCount()){
+                //swap
+                var temp = this.fullPlaylist[i-1];
+                this.fullPlaylist[i-1] = this.fullPlaylist[i];
+                this.fullPlaylist[i] = temp;
+            }
+        }
+    }
 }
 
 Playlist.prototype.updateServer = function(url, json){
 
-    alert("now playing from updateServer: " + this.nowPlayingIndex);
-
-    //var json = { "currently_playing" : this.nowPlayingIndex, "session_token" : this.sessionToken, "playlist" : this.fullPlaylist};
-
-
     var data = JSON.stringify(json);
-    //var url = '/sync';
+    //alert("SENDING: \n" + data);
 
-    alert(data);
-
-    var post = $.post(url, {formData: data});
+    return $.post(url, {formData: data});
 }
 
+Playlist.prototype.updateArray = function(){
 
-//DEBUG HACKS
-Playlist.prototype.getPlaylist = function(){
-    return this.fullPlaylist;
+    var json = {
+        "session_token": this.sessionToken,
+        "currently_playing": this.nowPlayingIndex
+    }
+    var url = "/getArrays"
+
+    var response = this.updateServer(url,json);
+
+    response.done(function(entity){
+        if(entity.success){
+            //alert("RESPONSE: \n" + JSON.stringify(entity));
+
+            this.fullPlaylist = new Array();
+            for(var i = 0 ; i < entity.song_list_length; ++i){
+                this.fullPlaylist.push(entity.song_list[i]);
+            }
+
+        }
+    })
 }
+
 
 
 
