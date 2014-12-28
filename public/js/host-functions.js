@@ -3,8 +3,9 @@
 
 // create a playlist on page load
 var token = document.getElementById('session_token').innerHTML;
-var playlist = new Playlist(5*1000, token);
-//window.setInterval(playlist.updateServer, 3*1000);
+var playlist = new Playlist(5*1000, token); // create playlist
+window.setInterval(updateDisplayLists,5*1000); // update display with playlist data timer
+
 
 // 2. This code loads the IFrame Player API code asynchronously.
 var tag = document.createElement('script');
@@ -298,82 +299,9 @@ function addToPlaylist(){
 
 
 }
-function updateServerCurrentlyPlaying(number){
-    var token = document.getElementById("session_token");
-    var json = {"currently_playing" :number, "session_token": token.innerHTML};
-
-    var data = JSON.stringify(json);
-    var url3 = "./updateCurrent";
-
-    var post = $.post(url3, {formData: data});
-
-    /* post.done(function(result){
-     if(result.success){
-     alert("Backend Updated");
-     alert(result.data);
-
-     }
-     });*/
-    }
-
-function resyncArrays(){
-    var token = document.getElementById("session_token");
-    var json = {"session_token": token.innerHTML};
-    var data = JSON.stringify(json);
-    var url = "/getArrays";
-    var post = $.post(url, {formData: data});
-
-    post.done(function(result){
-    if(result.success == false){
-    //alert("no songs");
-    }else{
-    var json  = JSON.parse(result);
-
-    while(videoIDs.length > 0){
-    videoIDs.pop();
-    }
-    while(videoNames.length > 0){
-    videoNames.pop();
-    }
-
-
-    for(var j = 0; j < json.length ; j++){
-    videoIDs.push(json[j].songid);
-    videoNames.push(json[j].songname);
-    //alert("pushing: " + videoNames[j] + "\n ArrayName len: " + videoNames.length + "\n ArrayIDs len: " + videoIDs.length);
-    }
-
-    soFarPlayed--; //HACK
-    getSongs(); //update the up next list with new updates
-    soFarPlayed++; //HACK
-
-    if(player.getPlayerState() == 0 && videoIDs.length > 0){
-    goToNext();
-    }
-
-    }
-
-
-
-    });
-
-    }
 
 function deleteSong(){
     var songid = this.name;
-    var token = document.getElementById("session_token");
-
-    var json = {session_token: token.innerHTML, songid: songid};
-    var data = JSON.stringify(json);
-    //alert(data);
-    var url = "/deleteSong";
-    //var post = $.post(url, {formData: data});
-
-    //post.done(function(result){
-    //alert(JSON.stringify(result.data));
-   // resyncArrays(); //once we have deleted the songs, resync the arrays to re-order the songlist
-   //);
-    //alert("here");
 
     playlist.deleteSong(songid);
     updateDisplayLists();

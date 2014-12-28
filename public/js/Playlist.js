@@ -5,8 +5,14 @@ Playlist.prototype.fullPlaylist = new Array();
 
 //contrustor
 
-/* Playlist takes the rate at which it needs to update the server in milisecond, aswell as the session token needed
-to update the appropriate content on the server */
+
+/**
+ * Playlist takes the rate at which it needs to update the server in milisecond, aswell as the session token needed
+ * to update the appropriate content on the server
+ * @param rate the rate in milliseconds the server is updated
+ * @param sessionToken the session token the server uses to identify the user's playlist
+ * @constructor
+ */
 function Playlist(rate, sessionToken){
     this.nowPlayingIndex = 0;
     this.sessionToken = sessionToken;
@@ -20,6 +26,11 @@ function Playlist(rate, sessionToken){
 
 //class methods
 
+/**
+ * getNowPlaying fetches the song that should now be playing on the playlist as determined by the nowPlayingIndex
+ * @returns returns the Song object in the playlist that is currently playing otherwise null if the playlist is empty
+ * or reached the end
+ */
 Playlist.prototype.getNowPlaying = function(){
 
     //if all songs have been played, return null
@@ -30,7 +41,11 @@ Playlist.prototype.getNowPlaying = function(){
     }
 
 }
-
+/**
+ * getUpNext returns an array of Song objects of the songs next to be played in the playlist, in the order that they
+ * will be played
+ * @returns an array of Song objects to be played next in the playlist in the order they will be played
+ */
 Playlist.prototype.getUpNext = function(){
 
     var upNextArray = new Array();
@@ -41,7 +56,11 @@ Playlist.prototype.getUpNext = function(){
 
 }
 
-/* Returns the next item in the playlist to be played. Returns null if there is nothing next */
+/**
+ * getNextToBePlayed returns the Song object that will be played next, but DOES NOT actualy move forward the nowPlayingIndex
+ * to that song
+ * @returns a Song object of the next song to be played on the playlist
+ */
 Playlist.prototype.getNextToBePlayed = function(){
 
     //alert("now playing in getNext: " + this.nowPlayingIndex);
@@ -54,8 +73,11 @@ Playlist.prototype.getNextToBePlayed = function(){
 
 }
 
-/* Returns the next item in the playlist to be played. Increments the nowPlayingIndex
-    Returns null if there is nothing next */
+/**
+ * getNextSong moves the playlist to the next song and returns the new song that is now playing. nowPlayingIndex is
+ * incremented in this method
+ * @returns a Song object of the song that is now playing
+ */
 Playlist.prototype.getNextSong = function(){
     var nextSong = this.getNextToBePlayed();
 
@@ -72,6 +94,11 @@ Playlist.prototype.getNextSong = function(){
     return nextSong;
 }
 
+/**
+ * addToPlaylist adds the parameter passed array of Song objects to the playlist in the order they are presented in the
+ * passed in array
+ * @param newSongsArray the array of Song objects to be added to the playlist
+ */
 Playlist.prototype.addToPlaylist = function(newSongsArray){
 
     for(var i = 0; i < newSongsArray.length; ++i){
@@ -91,10 +118,18 @@ Playlist.prototype.addToPlaylist = function(newSongsArray){
 
 }
 
+/**
+ * getLength gets the length of the playlist at the time of the method being called
+ * @returns the length of the playlist
+ */
 Playlist.prototype.getLength = function(){
     return this.fullPlaylist.length;
 }
 
+/**
+ * isEmpty determins if the playlist is empty or not
+ * @returns {boolean} true = the playlist is empty, false = the playlist is not empty
+ */
 Playlist.prototype.isEmpty = function(){
     if(this.fullPlaylist.length > 0){
         return false;
@@ -103,6 +138,11 @@ Playlist.prototype.isEmpty = function(){
     }
 }
 
+/**
+ * deleteSong deletes the parameter passed song with the matching song ID from the playlist and then re-sorts the
+ * playlist to ensure it is in the correct order with votes
+ * @param songID - the ID of the song to be deleted
+ */
 Playlist.prototype.deleteSong = function(songID){
 
     var song;
@@ -130,6 +170,12 @@ Playlist.prototype.deleteSong = function(songID){
 
 }
 
+/**
+ * sortPlaylist is meant to be a private method which resorts the playlist based on vote counts of the songs. If votes
+ * are the same, the items are not switched. Only when an item lower on the list has higher votes is it moved up.
+ * sortPlaylist also only sorts the songs that are up next and does not include any songs that have or are currently
+ * playing. The sort uses a n^2 Bubble Sort
+ */
 Playlist.prototype.sortPlaylist = function(){
 
     for(var i = this.nowPlayingIndex + 1 ; i < this.fullPlaylist.length ; ++i){
@@ -144,6 +190,13 @@ Playlist.prototype.sortPlaylist = function(){
     }
 }
 
+/**
+ * updateServer is an interface method that makes calls to the server using the parameter passed url and json data and
+ * return the results sent back by the server
+ * @param url - the url that will be called on the server
+ * @param json - the data being sent to the server
+ * @returns a json object with the data being returned by the server
+ */
 Playlist.prototype.updateServer = function(url, json){
 
     var data = JSON.stringify(json);
@@ -152,6 +205,11 @@ Playlist.prototype.updateServer = function(url, json){
     return $.post(url, {formData: data});
 }
 
+/**
+ * updateArray is a private method that is called by the playlist object at set timed intervals to update the playlist.
+ * This is used for when guests add new songs or songs are voted and therefor the playlist order has changed. The
+ * interval at which the playlist is updated can be set in the constructor of the Playlist object
+ */
 Playlist.prototype.updateArray = function(){
 
     var json = {
