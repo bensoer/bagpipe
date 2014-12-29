@@ -1,14 +1,34 @@
 
 
-var rate = 5 * 1000;
+var rate = 3 * 1000;
 window.setInterval(getCurrentlyPlaying, rate);
 window.setTimeout(getCurrentlyPlaying,0);
 window.setTimeout(getUpNext,0);
 window.setInterval(getUpNext, rate);
 var alreadyVoted = new Array();
 
+var token = document.getElementById('session_token').innerHTML;
+var playlist = new Playlist(5*1000, token );
+playlist.updateArray();
+
 
 function getCurrentlyPlaying(){
+    var song = playlist.getNowPlaying();
+
+    alert(song);
+
+    var lbl = document.getElementById("label");
+    lbl.innerHTML = "";
+
+    var link = document.createElement("a");
+    link.href= "https://www.youtube.com/watch?v=" + song.getID();
+    link.target = "_blank";
+    link.innerHTML = song.getName();
+
+    lbl.appendChild(link);
+
+
+/*
     var token = document.getElementById("session_token");
     var json = {"session_token": token.innerHTML};
 
@@ -33,7 +53,8 @@ function getCurrentlyPlaying(){
     }
 
     });
-    }
+*/
+}
 
 function getUpNext(){
     var token = document.getElementById("session_token");

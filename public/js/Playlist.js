@@ -200,7 +200,7 @@ Playlist.prototype.sortPlaylist = function(){
 Playlist.prototype.updateServer = function(url, json){
 
     var data = JSON.stringify(json);
-    //alert("SENDING: \n" + data);
+    alert("SENDING: \n" + data);
 
     return $.post(url, {formData: data});
 }
@@ -212,6 +212,8 @@ Playlist.prototype.updateServer = function(url, json){
  */
 Playlist.prototype.updateArray = function(){
 
+    alert("updating array");
+
     var json = {
         "session_token": this.sessionToken,
         "currently_playing": this.nowPlayingIndex
@@ -222,12 +224,15 @@ Playlist.prototype.updateArray = function(){
 
     response.done(function(entity){
         if(entity.success){
-            //alert("RESPONSE: \n" + JSON.stringify(entity));
+            alert("RESPONSE: \n" + JSON.stringify(entity));
 
             this.fullPlaylist = new Array();
+            alert("playlist rebuild: " + this.fullPlaylist);
             for(var i = 0 ; i < entity.song_list_length; ++i){
-                this.fullPlaylist.push(entity.song_list[i]);
+                this.fullPlaylist.push(new Song(entity.song_list[i].songname, entity.song_list[i].songid));
+                alert("playlist is now: " + this.fullPlaylist);
             }
+            alert("playlist after build: " + JSON.stringify(this.fullPlaylist));
 
         }
     })

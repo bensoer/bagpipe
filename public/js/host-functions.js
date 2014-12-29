@@ -4,7 +4,7 @@
 // create a playlist on page load
 var token = document.getElementById('session_token').innerHTML;
 var playlist = new Playlist(5*1000, token); // create playlist
-window.setInterval(updateDisplayLists,5*1000); // update display with playlist data timer
+window.setInterval(updateDisplayLists,3*1000); // update display with playlist data timer
 
 
 // 2. This code loads the IFrame Player API code asynchronously.
@@ -15,8 +15,6 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var rate = 10*1000;
-//window.setInterval(resyncArrays, rate);
 buildUpNextList();
 
 
@@ -116,8 +114,11 @@ function onPlayerStateChange(event) {
  * Updates the upNext and the nowPlaying lists GUI's
  */
 function updateDisplayLists(){
-    document.getElementById('label').innerHTML = playlist.getNowPlaying().getName();
-    buildUpNextList();
+    if(!playlist.isEmpty()){
+        document.getElementById('label').innerHTML = playlist.getNowPlaying().getName();
+        buildUpNextList();
+    }
+
 }
 
 /**
