@@ -1,6 +1,7 @@
 
 //class attribute
 Playlist.prototype.fullPlaylist = new Array();
+Playlist.prototype.arrayUpdated = false; //becomes true after the first update. Used for guest page to avoid blank pages
 
 
 //contrustor
@@ -200,7 +201,7 @@ Playlist.prototype.sortPlaylist = function(){
 Playlist.prototype.updateServer = function(url, json){
 
     var data = JSON.stringify(json);
-    alert("SENDING: \n" + data);
+    //alert("SENDING: \n" + data);
 
     return $.post(url, {formData: data});
 }
@@ -208,11 +209,14 @@ Playlist.prototype.updateServer = function(url, json){
 /**
  * updateArray is a private method that is called by the playlist object at set timed intervals to update the playlist.
  * This is used for when guests add new songs or songs are voted and therefor the playlist order has changed. The
- * interval at which the playlist is updated can be set in the constructor of the Playlist object
+ * currently playing song index is also updated from this method. The interval at which the playlist is updated can be
+ * set in the constructor of the Playlist object.
  */
 Playlist.prototype.updateArray = function(){
 
-    alert("updating array");
+    var _this = this;
+
+    //alert("updating array");
 
     var json = {
         "session_token": this.sessionToken,
@@ -224,18 +228,81 @@ Playlist.prototype.updateArray = function(){
 
     response.done(function(entity){
         if(entity.success){
-            alert("RESPONSE: \n" + JSON.stringify(entity));
+            //alert("RESPONSE: \n" + JSON.stringify(entity));
 
-            this.fullPlaylist = new Array();
-            alert("playlist rebuild: " + this.fullPlaylist);
+            _this.nowPlayingIndex = entity.currently_playing;
+            _this.fullPlaylist = new Array();
+            //alert("playlist rebuild: " + _this.fullPlaylist);
             for(var i = 0 ; i < entity.song_list_length; ++i){
-                this.fullPlaylist.push(new Song(entity.song_list[i].songname, entity.song_list[i].songid));
-                alert("playlist is now: " + this.fullPlaylist);
+                var song = new Song(entity.song_list[i].songname, entity.song_list[i].songid);
+                song.setVoteCount(entity.song_list[i].votes);
+                _this.fullPlaylist.push(song);
+                //alert("playlist is now: " + _this.fullPlaylist);
             }
-            alert("playlist after build: " + JSON.stringify(this.fullPlaylist));
+            _this.arrayUpdated = true;
+            //alert("playlist after build: " + JSON.stringify(_this.fullPlaylist));
 
         }
     })
+}
+
+Playlist.prototype.incrementSongVote = function(songID){
+    for(var i = this.nowPlayingIndex+1; i < this.fullPlaylist.length; ++i){
+        if(this.fullPlaylist[i].getID() == songID){
+            this.fullPlaylist[i].incrementVoteCount();
+            alert("new vote value: " + this.fullPlaylist[i].getVoteCount());
+            this.sortPlaylist();
+
+            var json = {
+                "session_token": this.sessionToken,
+                "song_id": this.fullPlaylist[i].getID(),
+                "song_name": this.fullPlaylist[i].getName(),
+                "vote_count": this.fullPlaylist[i].getVoteCount(),
+                "new_song_order":this.fullPlaylist
+            }
+
+            alert("Increment Song vote is sending: \n" + JSON.stringify(json));
+
+            var url = "/submitVote";
+
+            var response = this.updateServer(url,json);
+
+            response.done(function(entity){
+                alert("Increment Song vote recieved: \n" + JSON.stringify(entity));
+            })
+
+
+
+            return this.fullPlaylist[i];
+        }
+    }
+    return null // the song could not be found
+
+}
+
+Playlist.prototype.decrementSongVote = function(songID){
+    for(var i = this.nowPlayingIndex+1; i < this.fullPlaylist.length; ++i){
+        if(this.fullPlaylist[i].getID() == songID){
+            this.fullPlaylist[i].decrementVoteCount();
+
+            this.sortPlaylist();
+
+            var json = {
+                "session_token": this.sessionToken,
+                "song_id": this.fullPlaylist[i].getID(),
+                "song_name": this.fullPlaylist[i].getName(),
+                "vote_count": this.fullPlaylist[i].getVoteCount(),
+                "new_song_order":this.fullPlaylist
+            }
+
+            var url = "/submitVote";
+
+            this.updateServer(url,json);
+
+            return this.fullPlaylist[i];
+        }
+    }
+    return null // the song could not be found
 }
 
 
