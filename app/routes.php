@@ -110,3 +110,7 @@ Route::any('/deleteSong' , [
     'uses' => 'YoutubeController@AJAXDeleteSong'
 ]);
 
+Route::any('/sync', [
+    'as' => 'synchronization',
+    'uses' => 'YoutubeController@AJAXSync'
+]);

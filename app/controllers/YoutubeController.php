@@ -5,6 +5,7 @@ class YoutubeController extends BaseController {
     const API_KEY = 'AIzaSyCQqOHmCw-hNYt6q3pwmjVj_IEz0c_aJCc';
     var $youtube;
 
+    /* --- DEPRECATED --- */
     public function index()
     {
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
@@ -13,6 +14,7 @@ class YoutubeController extends BaseController {
         var_dump( $this->youtube->getVideoInfo($vID)->snippet->title );
     }
 
+    /* --- DEPRECATED --- */
     public function search(){
         $search = Input::get('search');
 
@@ -36,6 +38,7 @@ class YoutubeController extends BaseController {
 
     }
 
+    /* --- DEPRECATED --- */
     public function playlist(){
         $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
 
@@ -47,6 +50,10 @@ class YoutubeController extends BaseController {
         }
 
         return View::make('party.playlist')->with("videoData", array("videoIDs" => $videoIDs, "videoNames" => $videoNames));
+    }
+
+    private function getYoutubeInstance(){
+        return new Madcoda\Youtube(array('key' => self::API_KEY));
     }
 
     public function AJAXSearch(){
@@ -64,13 +71,16 @@ class YoutubeController extends BaseController {
     }
 
     private function searchForVideos($search){
-        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
-        $searchResult = $this->youtube->searchVideos($search);
+        //$this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
+        $youtube = $this->getYoutubeInstance();
+        //$searchResult = $this->youtube->searchVideos($search);
+        $searchResult = $youtube->searchVideos($search);
 
         $videos = array(array());
         foreach($searchResult as $search){
             $videoId = $search->id->videoId;
-            $video = $this->youtube->getVideoInfo($videoId);
+            //$video = $this->youtube->getVideoInfo($videoId);
+            $video = $youtube->getVideoInfo($videoId);
 
             $videos[0][] = $video->player->embedHtml . "</iframe>";
             $videos[1][] = $video->snippet->title;
@@ -81,6 +91,7 @@ class YoutubeController extends BaseController {
         return $videos;
     }
 
+    /* UPDATED */
     public function AJAXUpdateCurrentSong(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
@@ -97,6 +108,7 @@ class YoutubeController extends BaseController {
 
     }
 
+    /* DEPRECATED */
     public function AJAXGetCurrentSong(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
@@ -104,6 +116,12 @@ class YoutubeController extends BaseController {
        $user = DB::table('user')->where('session_token', $json->session_token)->first();
        $songData = DB::table('songlist')->where(array('session_token' => $json->session_token, 'priority' => $user->currently_playing))->first();
 
+        /*$songData = DB::table('user')
+            ->join("songlist","user.session_token", "=", "songlist.session_token" )
+            ->join("songlist", "user.currently_playing", "=", "songlist.priority")
+            ->select("songlist.songid", "songlist.songname")
+            ->get();
+*/
         if(empty($user)){
             return Response::json(array(
                 "success" => false
@@ -117,6 +135,7 @@ class YoutubeController extends BaseController {
         ));
     }
 
+    /* DEPRECATED */
     public function AJAXGetUpNextSongs(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
@@ -124,6 +143,13 @@ class YoutubeController extends BaseController {
         $user = DB::table('user')->where('session_token', $json->session_token)->first();
         $songData = DB::table('songlist')->select('songname','songid','votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
 
+        /*$songData = DB::table('user')
+            ->join("songlist","user.session_token","=", "songlist.session_token")
+            ->where(array('session_token' => $json->session_token))
+            ->orderBy(DB::raw('ABS(priority)'), 'asc')
+            ->select("songlist.songname","songlist.songid","songlist.votes")
+            ->get();
+*/
         if(empty($user)){
             return Response::json(array(
                 "success" => false,
@@ -149,11 +175,32 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        $user = DB::table('user')->where('session_token', $json->session_token)->first();
+        DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $json->song_id))->update(array('votes' => $json->vote_count));
+
+        $newOrder = $json->new_song_order;
+
+        //update the priority of the playlist
+        $count = 0;
+        foreach($newOrder as $songObj){
+            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
+            $count++;
+        }
+
+        return Response::json(array(
+            'success' => true,
+            'session_token' => $json->session_token,
+            'song_id' => $json->song_id,
+            'song_name' => $json->song_name,
+            'updated_vote' => $json->vote_count
+        ));
+
+
+        /*$user = DB::table('user')->where('session_token', $json->session_token)->first();
         $currently_playing = $user->currently_playing;
 
         $votes = DB::table('songlist')->select('votes')->where(array('session_token' => $json->session_token, 'songid' => $json->videoid))->get();
         DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $json->videoid))->update(array('votes' => $votes[0]->votes+1));
+
 
         //$songData = DB::table('songlist')->select('songname','songid','votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
 
@@ -164,7 +211,8 @@ class YoutubeController extends BaseController {
         foreach($newOrder as $songid){
             DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songid))->update(array('priority'=> $count));
             $count++;
-        }
+        }*/
+
 
 
 
@@ -193,9 +241,14 @@ class YoutubeController extends BaseController {
 */
     }
 
+    /* DEPRECATED */
     private function reprioritize($session_token, $currently_playing){
 
-        $results = DB::table('songlist')->select('songid', 'priority', 'votes')->where('session_token', $session_token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+        $results = DB::table('songlist')
+            ->select('songid', 'priority', 'votes')
+            ->where('session_token', $session_token)
+            ->orderBy(DB::raw('ABS(priority)'), 'asc')
+            ->get();
 
         $newOrder = Array();
 
@@ -220,58 +273,53 @@ class YoutubeController extends BaseController {
 
     }
 
+    /* UPDATED */
     public function AJAXDeleteSong(){
         $inputData = Input::get("formData");
         $json = json_decode($inputData);
 
-        DB::table('songlist')->where(array("session_token" => $json->session_token, "songid" => $json->songid))->delete();
+        DB::table('songlist')->where(array("session_token" => $json->session_token, "songid" => $json->deleted_song_id))->delete();
 
-        $user = DB::table('user')->select("currently_playing")->where("session_token", $json->session_token)->get();
+        //$user = DB::table('user')->select("currently_playing")->where("session_token", $json->session_token)->get();
 
-        $newOrder = $this->reprioritize($json->session_token, $user[0]->currently_playing);
+        //$newOrder = $this->reprioritize($json->session_token, $user[0]->currently_playing);
+
+        $newOrder = $json->new_song_order;
 
         $count = 0;
-        foreach($newOrder as $songid){
-            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songid))->update(array('priority'=> $count));
+        foreach($newOrder as $songObj){
+            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
             $count++;
         }
 
         return Response::json(array(
             "success" => true,
+            "session_token" => $json->session_token,
+            "deleted_song_id" => $json->deleted_song_id,
+            "deleted_song_name" => $json->deleted_song_name
         ));
 
     }
 
+    /* UPDATED */
     public function AJAXAddSongs(){
-        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
         $inputData = Input::get('formData');
-        //parse_str($inputData, $formFields);
-       $json =  json_decode($inputData);
-
-        //need to have order maintained in database. belongs to token in last position
-
-        $length = count($json); //how many to add
-        $sessionToken = $json[$length-1]; //grab the token from the last one
+        $json =  json_decode($inputData);
 
         //find in database how many songs are there already with this session token
-        $numOfSongs = DB::table('songlist')->where('session_token', $sessionToken)->count();
+        $numOfSongs = DB::table('songlist')->where('session_token', $json->session_token)->count();
 
-        for($i=0 ; $i < $length-1 ; $i++){ //grab all except the last token one
-
-            $video = $this->youtube->getVideoInfo($json[$i]);
-            $title = $video->snippet->title;
-
+        for($i=0 ; $i < $json->num_new_songs ; $i++){
 
             DB::table('songlist')->insert(
-                array( "session_token" => $sessionToken, "songid" => $json[$i], "songname" => $title, "priority" => ($numOfSongs +$i))
+                array( "session_token" => $json->session_token, "songid" => $json->new_songs[$i]->id, "songname" => $json->new_songs[$i]->name, "votes" => 0, "priority" => ($numOfSongs +$i))
             );
         }
 
-
-
         return Response::json(array(
-            'success' => true,
-            'data' => $inputData
+            "success" => true,
+            "session_token" => $json->session_token,
+            "added_songs" => $json->num_new_songs
         ));
     }
 
@@ -279,17 +327,25 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        $songData = DB::table('songlist')->select('songname','songid')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+        $songData = DB::table('songlist')->select('songname','songid', 'votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+        $userData = DB::table('user')->select('currently_playing')->where(array('session_token' => $json->session_token))->get();
 
         if(empty($songData)){
             return Response::json(array(
-                "success" => false
+                "success" => false,
+                "message" => "Song list returned no results",
+                "error_code" => 404
+            ));
+        }else{
+
+            return Response::json(array(
+                'success' => true,
+                'session_token' => $json->session_token,
+                'song_list' => $songData,
+                'song_list_length' => count($songData),
+                'currently_playing' => $userData[0]->currently_playing
             ));
         }
-
-        $json = json_encode($songData);
-
-        return Response:: json($json);
     }
 
     public function AJAXUnloadDBSession(){
@@ -303,6 +359,20 @@ class YoutubeController extends BaseController {
             'data' => $json
         ));
 
+    }
+
+    public function AJAXSync(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        DB::table('user')->where(array('session_token' => $json->session_token))->update(array('currently_playing'=> $json->currently_playing));
+
+
+        return Response::json(array(
+            'success' => true,
+            'session_token' => $json->session_token,
+
+        ));
     }
 
 
