@@ -63,7 +63,7 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        DB::table('user')
+        DB::table('users')
             ->where('session_token', $json->session_token)
             ->update(array('currently_playing' => $json->currently_playing));
 
@@ -83,14 +83,14 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $json->song_id))->update(array('votes' => $json->vote_count));
+        DB::table('songs')->where(array('session_token' => $json->session_token, 'songid' => $json->song_id))->update(array('votes' => $json->vote_count));
 
         $newOrder = $json->new_song_order;
 
         //update the priority of the playlist
         $count = 0;
         foreach($newOrder as $songObj){
-            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
+            DB::table('songs')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
             $count++;
         }
 
@@ -110,7 +110,7 @@ class YoutubeController extends BaseController {
         $inputData = Input::get("formData");
         $json = json_decode($inputData);
 
-        DB::table('songlist')->where(array("session_token" => $json->session_token, "songid" => $json->deleted_song_id))->delete();
+        DB::table('songs')->where(array("session_token" => $json->session_token, "songid" => $json->deleted_song_id))->delete();
 
         //$user = DB::table('user')->select("currently_playing")->where("session_token", $json->session_token)->get();
 
@@ -120,7 +120,7 @@ class YoutubeController extends BaseController {
 
         $count = 0;
         foreach($newOrder as $songObj){
-            DB::table('songlist')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
+            DB::table('songs')->where(array('session_token' => $json->session_token, 'songid' => $songObj->id))->update(array('priority'=> $count));
             $count++;
         }
 
@@ -141,11 +141,11 @@ class YoutubeController extends BaseController {
         $json =  json_decode($inputData);
 
         //find in database how many songs are there already with this session token
-        $numOfSongs = DB::table('songlist')->where('session_token', $json->session_token)->count();
+        $numOfSongs = DB::table('songs')->where('session_token', $json->session_token)->count();
 
         for($i=0 ; $i < $json->num_new_songs ; $i++){
 
-            DB::table('songlist')->insert(
+            DB::table('songs')->insert(
                 array( "session_token" => $json->session_token, "songid" => $json->new_songs[$i]->id, "songname" => $json->new_songs[$i]->name, "votes" => 0, "priority" => ($numOfSongs +$i))
             );
         }
@@ -165,8 +165,9 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        $songData = DB::table('songlist')->select('songname','songid', 'votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
-        $userData = DB::table('user')->select('currently_playing')->where(array('session_token' => $json->session_token))->get();
+        //$songData = DB::table('songs')->select('songname','songid', 'votes')->where(array('session_token' => $json->session_token))->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+        $songData = Song::getPlaylist($json->session_token);
+        $userData = DB::table('users')->select('currently_playing')->where(array('session_token' => $json->session_token))->get();
 
         if(empty($songData)){
             return Response::json(array(
@@ -194,8 +195,8 @@ class YoutubeController extends BaseController {
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
 
-        DB::table('songlist')->where('session_token','=', $json->session_token)->delete();
-        DB::table('user')->where('session_token','=', $json->session_token)->delete();
+        DB::table('songs')->where('session_token','=', $json->session_token)->delete();
+        DB::table('users')->where('session_token','=', $json->session_token)->delete();
 
         return Response::json(array(
             'data' => $json
