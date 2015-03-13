@@ -211,7 +211,7 @@ $("#searchSong").submit(function(event){
 
     var $form = $( this ),
     data = $form.serialize(),
-    url = "/searchSong";
+    url = "/api/search";
 
 
     var posting = $.post( url, { formData: data } );
@@ -322,7 +322,7 @@ $(window).bind('unload', function(){
     var token = document.getElementById("session_token");
     var json = {session_token: token.innerHTML};
     var data = JSON.stringify(json);
-    var url3 = "/unloadDBSession";
+    var url3 = "/api/playlist/delete";
     var post = $.post(url3, {formData: data});
 
     post.done(function(result){

@@ -109,7 +109,7 @@ Playlist.prototype.getNextSong = function(){
             "session_token" : this.sessionToken,
             "currently_playing": this.nowPlayingIndex
         }
-        var url = "/updateCurrent";
+        var url = "/api/playlist/update/current";
         this.updateServer(url,json);
     }
     return nextSong;
@@ -136,7 +136,7 @@ Playlist.prototype.addToPlaylist = function(newSongsArray){
         "new_songs" : newSongsArray,
         "num_new_songs" : newSongsArray.length
     }
-    var url = "/addToPlaylist";
+    var url = "/api/playlist/add";
 
     var response = this.updateServer(url,json);
 
@@ -194,7 +194,7 @@ Playlist.prototype.deleteSong = function(songID){
         "deleted_song_name" : song.getName(),
         "new_song_order" : this.fullPlaylist
     }
-    var url = "/deleteSong";
+    var url = "/api/playlist/song/delete";
 
     var response = this.updateServer(url, json);
 
@@ -235,7 +235,7 @@ Playlist.prototype.sortPlaylist = function(){
 Playlist.prototype.updateServer = function(url, json){
 
     var data = JSON.stringify(json);
-    alert("Update Server - SENDING: \n" + data);
+    //alert("Update Server - SENDING: \n" + data);
 
     return $.post(url, {formData: data});
 }
@@ -261,7 +261,7 @@ Playlist.prototype.updateArray = function(){
         "session_token": this.sessionToken,
         "currently_playing": this.nowPlayingIndex
     }
-    var url = "/getArrays"
+    var url = "/api/playlist";
 
     var response = this.updateServer(url,json);
 
@@ -315,7 +315,7 @@ Playlist.prototype.incrementSongVote = function(songID){
 
             //alert("Increment Song vote is sending: \n" + JSON.stringify(json));
 
-            var url = "/submitVote";
+            var url = "/api/playlist/vote";
             var response = this.updateServer(url,json);
 
             response.done(function(entity){
@@ -356,7 +356,7 @@ Playlist.prototype.decrementSongVote = function(songID){
                 "new_song_order":this.fullPlaylist
             }
 
-            var url = "/submitVote";
+            var url = "/api/playlist/vote";
 
             var response = this.updateServer(url,json);
 
