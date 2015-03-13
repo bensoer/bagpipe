@@ -29,8 +29,16 @@ function Playlist(rate, sessionToken){
 
 //class methods
 
+/**
+ * toggleVideoLoop toggles the looping settings as to whether the song currently playing will loop or not. When enabled
+ * the currently playing song will continually be set and the playlist will not move forward until it is unset
+ */
 Playlist.prototype.toggleVideoLoop = function(){
-
+    if(this.loopSong){
+        this.loopSong = false;
+    }else{
+        this.loopSong = true;
+    }
 }
 
 /**
