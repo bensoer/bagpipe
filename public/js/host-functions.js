@@ -135,6 +135,10 @@ function playVideo(){
     player.playVideo();
 }
 
+function loopVideo(){
+    playlist.toggleVideoLoop();
+}
+
 /** changes the state of the video from play to pause and back **/
 function changeState(){
     if(player.getPlayerState() == 1){

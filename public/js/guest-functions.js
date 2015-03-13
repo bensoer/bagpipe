@@ -354,7 +354,7 @@ function submitVote() {
      }
 
      }*/
-
+    window.alert("got value : " + this.value);
     var result = playlist.incrementSongVote(this.value);
 
     if(result == null){
