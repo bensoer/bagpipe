@@ -101,4 +101,8 @@ Route::post('/api/playlist/song/delete' , [
     'as' => 'deleteSong',
     'uses' => 'YoutubeController@AJAXDeleteSong'
 ]);
+Route::post('/api/playlist/delete/guest', [
+    'as' => 'decrementGuest',
+    'uses' => 'YoutubeController@AJAXDecrementGuest'
+]);
 

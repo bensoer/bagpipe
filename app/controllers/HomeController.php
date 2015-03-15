@@ -32,7 +32,7 @@ class HomeController extends BaseController {
             //avoiding injection
             if($token === strip_tags($token)){
 
-                $results = DB::table('user')->where('session_token', $token)->first();
+                $results = User::where('session_token', $token)->first();
 
                 if(empty($results)){
                     return Redirect::back()
@@ -40,7 +40,7 @@ class HomeController extends BaseController {
                 }else{
 
                     //get whole songlist
-                    $songlist = DB::table('songlist')->where('session_token',$token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
+                    $songlist = Song::where('session_token',$token)->orderBy(DB::raw('ABS(priority)'), 'asc')->get();
 
                     //if there are no songs, then guest shouldn't be allowed in as the playlist isn't ready
                     if(empty($songlist)){
@@ -50,7 +50,7 @@ class HomeController extends BaseController {
 
 
                     //get the user and find what is the currently playing song
-                    $user = DB::table('user')->where('session_token', $token)->first();
+                    $user = User::where('session_token', $token)->first();
                     $currentlyPlaying = $user->currently_playing;
 
                     //only send the view the list from the currently playing song onward
@@ -58,6 +58,10 @@ class HomeController extends BaseController {
                     for($i = $currentlyPlaying ; $i < count($songlist) ; $i++){
                         $displayablesonglist[] = $songlist[$i];
                     }
+
+                    //add this to number fo guests
+                    $user->increment('guests');
+                    $user->save();
 
                     //var_dump($displayablesonglist);
                    return View::make('party.guest')->with('data', array('songlist' => $displayablesonglist, 'token' => $token));
@@ -92,47 +96,8 @@ class HomeController extends BaseController {
 
         //Session::put("token", $token);
 
-        $playlist = $this->playlist();
         return View::make('party.host')->with('data', array( 'shareCode' => $token));//, "videoIDs" => $playlist['videoIDs'], "videoNames" => $playlist['videoNames']));
     }
-
-
-    public function search(){
-        $search = Input::get('search');
-
-        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
-        $searchResult = $this->youtube->searchVideos($search);
-
-        $embedded = array();
-        foreach($searchResult as $search){
-            $videoId = $search->id->videoId;
-            $video = $this->youtube->getVideoInfo($videoId);
-
-            $embedded[] = $video->player->embedHtml . "</iframe>";
-        }
-
-
-        return View::make('party.search')->with('embedded', $embedded);
-
-        //print_r($searchResult);
-
-
-
-    }
-
-    public function playlist(){
-        $this->youtube = new Madcoda\Youtube(array( 'key' => self::API_KEY ));
-
-        $videoIDs = array("H_HUasB6DPQ","7hHX3tCti74", "Ou1fTw7iMjA");
-        $videoNames = array();
-        foreach($videoIDs as $id){
-            $videoNames[] =  $this->youtube->getVideoInfo($id)->snippet->title;
-
-        }
-
-        return array("videoIDs" => $videoIDs, "videoNames" => $videoNames);
-    }
-
 
 
     public function about()
@@ -140,10 +105,6 @@ class HomeController extends BaseController {
         return View::make('pages.about');
     }
 
-	public function showWelcome()
-	{
-		return View::make('hello');
-	}
 
     public function dashboard(){
 

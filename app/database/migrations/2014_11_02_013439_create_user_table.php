@@ -23,6 +23,7 @@ class CreateUserTable extends Migration {
             //$table->string("confirmation_code")->nullable();
             $table->string("session_token");
             $table->integer("currently_playing")->default(0);
+            $table->integer("guests")->default(0);
             $table->timestamps();
 		});
 
