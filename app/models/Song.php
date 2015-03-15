@@ -13,7 +13,11 @@ class Song extends Eloquent{
 
     protected $table  = "songs";
     protected $guarded = array('id');
+    public $timestamps = false;
 
+    protected function users(){
+        return $this->belongsTo('user');
+    }
 
     public static function getPlaylist($sessionToken){
         return DB::table('songs')

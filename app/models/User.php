@@ -11,6 +11,12 @@ class User
     protected $table  = "users";
     protected $hidden = ["password"];
 
+    protected function songs(){
+        return $this->hasMany('song');
+    }
+
+
+
     public function getAuthIdentifier()
     {
         return $this->getKey();

@@ -248,6 +248,7 @@ Playlist.prototype.updateServer = function(url, json){
  */
 Playlist.prototype.updateArray = function(){
 
+    //if not allowed to update don't attempt to update
     if(this.allowedToUpdate == false){
         return;
     }
@@ -266,7 +267,8 @@ Playlist.prototype.updateArray = function(){
     var response = this.updateServer(url,json);
 
     response.done(function(entity){
-        if(entity.success){
+        //if change call succeeded and your allowed to update
+        if(entity.success && _this.allowedToUpdate == true){
             //alert("RESPONSE: \n" + JSON.stringify(entity));
 
             _this.nowPlayingIndex = entity.currently_playing;
