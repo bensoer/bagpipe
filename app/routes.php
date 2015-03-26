@@ -56,61 +56,53 @@ Route::get('/host', [
     'uses' => 'HomeController@host'
 ]);
 
-
+/*
 Route::get('/test', [
     'as' => 'test',
-    'uses' => 'YoutubeController@index'
+    'uses' => 'AlphaController@index'
 ]);
 Route::any('/wut', [
     'as' => 'search' ,
-    'uses' => 'YoutubeController@search'
+    'uses' => 'AlphaController@search'
 ]);
 Route::any('/playlist', [
     'as' => 'playlist',
-    'uses' => 'YoutubeController@playlist'
+    'uses' => 'AlphaController@playlist'
 ]);
-
+*/
 
 #API
 
-Route::any('/searchSong',[
+Route::any('/api/search',[
     'as' => 'searchSong',
     'uses' => 'YoutubeController@AJAXSearch'
 ]);
-Route::any('/addToPlaylist', [
+Route::post('/api/playlist/add', [
     'as' => 'updateSongs',
     'uses' => 'YoutubeController@AJAXAddSongs'
 ]);
-Route::any('/unloadDBSession', [
+Route::post('/api/playlist/delete', [
     'as' => 'unloadDBSession',
     'uses' => 'YoutubeController@AJAXUnloadDBSession'
 ]);
-Route::any('/updateCurrent', [
+Route::post('/api/playlist/update/current', [
     'as' => 'updateCuurent',
     'uses' => 'YoutubeController@AJAXUpdateCurrentSong'
 ]);
-Route::any('/getCurrent', [
-    'as' => 'getCurrent',
-    'uses' => 'YoutubeController@AJAXGetCurrentSong'
-]);
-Route::any('/getUpNext', [
-    'as' => 'getUpNext',
-    'uses' => 'YoutubeController@AJAXGetUpNextSongs'
-]);
-Route::any('/getArrays', [
+Route::post('/api/playlist', [
     'as' => 'getArrays',
     'uses' => 'YoutubeController@AJAXGetArrays'
 ]);
-Route::any('/submitVote', [
+Route::post('/api/playlist/vote', [
     'as' => 'submitVote',
     'uses' => 'YoutubeController@AJAXSubmitVote'
 ]);
-Route::any('/deleteSong' , [
+Route::post('/api/playlist/song/delete' , [
     'as' => 'deleteSong',
     'uses' => 'YoutubeController@AJAXDeleteSong'
 ]);
-
-Route::any('/sync', [
-    'as' => 'synchronization',
-    'uses' => 'YoutubeController@AJAXSync'
+Route::post('/api/playlist/delete/guest', [
+    'as' => 'decrementGuest',
+    'uses' => 'YoutubeController@AJAXDecrementGuest'
 ]);
+

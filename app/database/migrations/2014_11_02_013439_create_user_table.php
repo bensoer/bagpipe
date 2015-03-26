@@ -12,7 +12,7 @@ class CreateUserTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('user', function(Blueprint $table)
+		Schema::create('users', function(Blueprint $table)
 		{
             $table->increments("id");
            // $table->string("username");
@@ -23,10 +23,11 @@ class CreateUserTable extends Migration {
             //$table->string("confirmation_code")->nullable();
             $table->string("session_token");
             $table->integer("currently_playing")->default(0);
+            $table->integer("guests")->default(0);
             $table->timestamps();
 		});
 
-        Schema::create('songlist', function(Blueprint $table)
+        Schema::create('songs', function(Blueprint $table)
         {
             $table->increments("id");
             $table->string("session_token");
@@ -44,8 +45,8 @@ class CreateUserTable extends Migration {
 	 */
 	public function down()
 	{
-        Schema::dropIfExists("user");
-        Schema::dropIfExists("songlist");
+        Schema::dropIfExists("users");
+        Schema::dropIfExists("songs");
 	}
 
 }

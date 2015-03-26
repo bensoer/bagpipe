@@ -2,6 +2,8 @@
 //class attribute
 Playlist.prototype.fullPlaylist = new Array();
 Playlist.prototype.arrayUpdated = false; //becomes true after the first update. Used for guest page to avoid blank pages
+Playlist.prototype.allowedToUpdate = true; //determines if the updateArray call is allowed to occur
+Playlist.prototype.loopSong = false; //determines if currently playing will repeat or not
 
 
 //contrustor
@@ -21,11 +23,23 @@ function Playlist(rate, sessionToken){
     //setInterval passes a "this" that referres to the window, not to our object, so we need ot make out own this
     //and pass it
     var _this = this;
-    setInterval(function(){_this.updateArray()}, rate);
+    setInterval(function(){ _this.updateArray(); }, rate);
 
 };
 
 //class methods
+
+/**
+ * toggleVideoLoop toggles the looping settings as to whether the song currently playing will loop or not. When enabled
+ * the currently playing song will continually be set and the playlist will not move forward until it is unset
+ */
+Playlist.prototype.toggleVideoLoop = function(){
+    if(this.loopSong){
+        this.loopSong = false;
+    }else{
+        this.loopSong = true;
+    }
+}
 
 /**
  * getNowPlaying fetches the song that should now be playing on the playlist as determined by the nowPlayingIndex
@@ -65,6 +79,10 @@ Playlist.prototype.getUpNext = function(){
 Playlist.prototype.getNextToBePlayed = function(){
 
     //alert("now playing in getNext: " + this.nowPlayingIndex);
+    if(this.loopSong){
+        var sameSong = this.getNowPlaying();
+        return sameSong;
+    }
 
     if(this.nowPlayingIndex + 1 > this.fullPlaylist.length){
         return null;
@@ -83,13 +101,15 @@ Playlist.prototype.getNextSong = function(){
     var nextSong = this.getNextToBePlayed();
 
     if(nextSong != null){
-        this.nowPlayingIndex++;
+        if(!this.loopSong){
+            this.nowPlayingIndex++;
+        }
 
         var json = {
             "session_token" : this.sessionToken,
             "currently_playing": this.nowPlayingIndex
         }
-        var url = "/updateCurrent";
+        var url = "/api/playlist/update/current";
         this.updateServer(url,json);
     }
     return nextSong;
@@ -102,6 +122,9 @@ Playlist.prototype.getNextSong = function(){
  */
 Playlist.prototype.addToPlaylist = function(newSongsArray){
 
+    var _this = this;
+    this.allowedToUpdate = false;
+
     for(var i = 0; i < newSongsArray.length; ++i){
         this.fullPlaylist.push(newSongsArray[i]);
     }
@@ -113,9 +136,13 @@ Playlist.prototype.addToPlaylist = function(newSongsArray){
         "new_songs" : newSongsArray,
         "num_new_songs" : newSongsArray.length
     }
-    var url = "/addToPlaylist";
+    var url = "/api/playlist/add";
 
-    this.updateServer(url,json);
+    var response = this.updateServer(url,json);
+
+    response.done(function(entity){
+       _this.allowedToUpdate = true;
+    });
 
 }
 
@@ -146,8 +173,11 @@ Playlist.prototype.isEmpty = function(){
  */
 Playlist.prototype.deleteSong = function(songID){
 
+    var _this = this;
+
     var song;
 
+    this.allowedToUpdate = false;
     for(var i = 0; i < this.fullPlaylist.length; ++i){
         if(this.fullPlaylist[i].getID() == songID){
             alert('deleting: ' + this.fullPlaylist[i].getName());
@@ -164,9 +194,13 @@ Playlist.prototype.deleteSong = function(songID){
         "deleted_song_name" : song.getName(),
         "new_song_order" : this.fullPlaylist
     }
-    var url = "/deleteSong";
+    var url = "/api/playlist/song/delete";
 
-    this.updateServer(url, json);
+    var response = this.updateServer(url, json);
+
+    response.done(function(entity){
+        _this.allowedToUpdate = true;
+    });
 
 
 }
@@ -179,13 +213,13 @@ Playlist.prototype.deleteSong = function(songID){
  */
 Playlist.prototype.sortPlaylist = function(){
 
-    for(var i = this.nowPlayingIndex + 1 ; i < this.fullPlaylist.length ; ++i){
+    for(var i = this.nowPlayingIndex + 1 ; i < this.fullPlaylist.length-1 ; ++i){
         for(var j = i+1; j < this.fullPlaylist.length; ++j){
-            if(this.fullPlaylist[i-1].getVoteCount() < this.fullPlaylist[i].getVoteCount()){
+            if(this.fullPlaylist[i].getVoteCount() < this.fullPlaylist[j].getVoteCount()){
                 //swap
-                var temp = this.fullPlaylist[i-1];
-                this.fullPlaylist[i-1] = this.fullPlaylist[i];
-                this.fullPlaylist[i] = temp;
+                var temp = this.fullPlaylist[i];
+                this.fullPlaylist[i] = this.fullPlaylist[j];
+                this.fullPlaylist[j] = temp;
             }
         }
     }
@@ -201,7 +235,7 @@ Playlist.prototype.sortPlaylist = function(){
 Playlist.prototype.updateServer = function(url, json){
 
     var data = JSON.stringify(json);
-    //alert("SENDING: \n" + data);
+    //alert("Update Server - SENDING: \n" + data);
 
     return $.post(url, {formData: data});
 }
@@ -214,6 +248,12 @@ Playlist.prototype.updateServer = function(url, json){
  */
 Playlist.prototype.updateArray = function(){
 
+    //if not allowed to update don't attempt to update
+    if(this.allowedToUpdate == false){
+        return;
+    }
+
+
     var _this = this;
 
     //alert("updating array");
@@ -222,12 +262,13 @@ Playlist.prototype.updateArray = function(){
         "session_token": this.sessionToken,
         "currently_playing": this.nowPlayingIndex
     }
-    var url = "/getArrays"
+    var url = "/api/playlist";
 
     var response = this.updateServer(url,json);
 
     response.done(function(entity){
-        if(entity.success){
+        //if change call succeeded and your allowed to update
+        if(entity.success && _this.allowedToUpdate == true){
             //alert("RESPONSE: \n" + JSON.stringify(entity));
 
             _this.nowPlayingIndex = entity.currently_playing;
@@ -247,33 +288,47 @@ Playlist.prototype.updateArray = function(){
 }
 
 Playlist.prototype.incrementSongVote = function(songID){
+
+    var _this = this;
+    this.allowedToUpdate = false;
     for(var i = this.nowPlayingIndex+1; i < this.fullPlaylist.length; ++i){
+        //alert("comparing: " + this.fullPlaylist[i].getID() + " vs. " + songID);
         if(this.fullPlaylist[i].getID() == songID){
+            //alert("comparing - MATCH: " + this.fullPlaylist[i].getID() + " vs. " + songID);
             this.fullPlaylist[i].incrementVoteCount();
-            alert("new vote value: " + this.fullPlaylist[i].getVoteCount());
+
+            // WARNING: ORDERING HERE HUGELY EFFECTS WHAT IS SENT TO THE API
+
+            var songid = this.fullPlaylist[i].getID();
+            var songname = this.fullPlaylist[i].getName();
+            var votecount = this.fullPlaylist[i].getVoteCount();
+
+            //alert("new vote value: " + this.fullPlaylist[i].getVoteCount());
+
             this.sortPlaylist();
 
             var json = {
                 "session_token": this.sessionToken,
-                "song_id": this.fullPlaylist[i].getID(),
-                "song_name": this.fullPlaylist[i].getName(),
-                "vote_count": this.fullPlaylist[i].getVoteCount(),
+                "song_id": songid,
+                "song_name": songname,
+                "vote_count":  votecount,
                 "new_song_order":this.fullPlaylist
             }
 
-            alert("Increment Song vote is sending: \n" + JSON.stringify(json));
+            //alert("Increment Song vote is sending: \n" + JSON.stringify(json));
 
-            var url = "/submitVote";
-
+            var url = "/api/playlist/vote";
             var response = this.updateServer(url,json);
 
             response.done(function(entity){
-                alert("Increment Song vote recieved: \n" + JSON.stringify(entity));
+                _this.allowedToUpdate = true;
+                //alert("Increment Song vote recieved: \n" + JSON.stringify(entity));
             })
 
 
 
             return this.fullPlaylist[i];
+            break;
         }
     }
     return null // the song could not be found
@@ -281,23 +336,35 @@ Playlist.prototype.incrementSongVote = function(songID){
 }
 
 Playlist.prototype.decrementSongVote = function(songID){
+    var _this = this;
+    this.allowedToUpdate = false
     for(var i = this.nowPlayingIndex+1; i < this.fullPlaylist.length; ++i){
         if(this.fullPlaylist[i].getID() == songID){
             this.fullPlaylist[i].decrementVoteCount();
+
+            // WARNING: ORDERING HERE HUGELY EFFECTS WHAT IS SENT TO THE API
+
+            var songid = this.fullPlaylist[i].getID();
+            var songname = this.fullPlaylist[i].getName();
+            var votecount = this.fullPlaylist[i].getVoteCount();
 
             this.sortPlaylist();
 
             var json = {
                 "session_token": this.sessionToken,
-                "song_id": this.fullPlaylist[i].getID(),
-                "song_name": this.fullPlaylist[i].getName(),
-                "vote_count": this.fullPlaylist[i].getVoteCount(),
+                "song_id": songid,
+                "song_name": songname,
+                "vote_count": votecount,
                 "new_song_order":this.fullPlaylist
             }
 
-            var url = "/submitVote";
+            var url = "/api/playlist/vote";
 
-            this.updateServer(url,json);
+            var response = this.updateServer(url,json);
+
+            response.done(function(entity){
+                _this.allowedToUpdate = true;
+            })
 
             return this.fullPlaylist[i];
         }

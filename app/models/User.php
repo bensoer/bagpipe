@@ -8,8 +8,14 @@ class User
     extends Eloquent
     implements UserInterface, RemindableInterface
 {
-    protected $table  = "user";
+    protected $table  = "users";
     protected $hidden = ["password"];
+
+    protected function songs(){
+        return $this->hasMany('song');
+    }
+
+
 
     public function getAuthIdentifier()
     {
