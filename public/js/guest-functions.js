@@ -354,7 +354,7 @@ function submitVote() {
      }
 
      }*/
-
+    window.alert("got value : " + this.value);
     var result = playlist.incrementSongVote(this.value);
 
     if(result == null){
@@ -364,5 +364,17 @@ function submitVote() {
     }
 
 }
+
+/**
+ * When the guest leaves, tell the server there is one less guest now on the playlist
+ */
+$(window).bind('unload', function(){
+    var token = document.getElementById("session_token");
+    var json = {session_token: token.innerHTML};
+    var data = JSON.stringify(json);
+    var url3 = "/api/playlist/delete/guest";
+    var post = $.post(url3, {formData: data});
+
+});
 
 

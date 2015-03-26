@@ -62,11 +62,11 @@ Song.prototype.setVoteCount = function(newVoteCount){
  * incrementVoteCount increments the number of votes there are for the song
  */
 Song.prototype.incrementVoteCount = function(){
-    this.voteCount++;
+    ++this.voteCount;
 }
 /**
  * decrementVoteCount decrements the number of votes there are for the song
  */
 Song.prototype.decrementVoteCount = function(){
-    this.voteCount--;
+    --this.voteCount;
 }
