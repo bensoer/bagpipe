@@ -66,6 +66,15 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-12">
+            <b>OPTIONS: &nbsp&nbsp</b>
+                Enable Double-Playlist <input type="checkbox" id="enable_double_playlist" name="enable_double_playlist" onclick="toggleDoublePlaylist()">
+        </div>
+    </div>
+
+
+
     <!-- Controls: Play/Pause, Progress bar, Skip -->
     <div class="row">
         <div class="col-lg-12 text-center">
@@ -104,6 +113,8 @@
              </div>
          </div>
     </div>
+
+
 </div>
 
 <!-- Queue of YT videos -->

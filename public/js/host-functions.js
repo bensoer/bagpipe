@@ -5,6 +5,7 @@
 var token = document.getElementById('session_token').innerHTML;
 var playlist = new Playlist(5*1000, token); // create playlist
 window.setInterval(updateDisplayLists,3*1000); // update display with playlist data timer
+window.setInterval(updateServerNowPlayingTime, 3*1000);
 
 
 // 2. This code loads the IFrame Player API code asynchronously.
@@ -74,9 +75,21 @@ function onPlayerStateChange(event) {
         }
 
     } else if (event.data == YT.PlayerState.PLAYING) {
+
+
+
+
+
+        //move the progress bar
         document.getElementById("play").className = "glyphicon glyphicon-pause";
         var playerTotalTime = player.getDuration();
         my_timer = setInterval(function () {
+
+
+            //update the playlist with the current time
+            var time = player.getCurrentTime();
+            playlist.setNowPlayingTime(time);
+
 
             var playerCurrentTime = player.getCurrentTime();
             var minutes = Math.floor(((playerTotalTime / 60) - (playerCurrentTime / 60)) % 60);
@@ -119,6 +132,16 @@ function updateDisplayLists(){
         buildUpNextList();
     }
 
+}
+
+function updateServerNowPlayingTime(){
+    if(!playlist.isEmpty()){
+       playlist.updateNowPlayingTime();
+    }
+}
+
+function toggleDoublePlaylist(){
+    alert("HIT");
 }
 
 /**

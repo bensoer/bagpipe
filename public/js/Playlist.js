@@ -4,7 +4,7 @@ Playlist.prototype.fullPlaylist = new Array();
 Playlist.prototype.arrayUpdated = false; //becomes true after the first update. Used for guest page to avoid blank pages
 Playlist.prototype.allowedToUpdate = true; //determines if the updateArray call is allowed to occur
 Playlist.prototype.loopSong = false; //determines if currently playing will repeat or not
-
+Playlist.prototype.doublePlaylist = false; //determines whether double playlist functionality is enabled
 
 //contrustor
 
@@ -41,6 +41,18 @@ Playlist.prototype.toggleVideoLoop = function(){
     }
 }
 
+Playlist.prototype.toggleDoublePlaylist = function(){
+    if(this.doublePlaylist){
+        this.doublePlaylist = false;
+    }else{
+        this.doublePlaylist = true;
+    }
+
+    //tell the server about the change
+
+
+}
+
 /**
  * getNowPlaying fetches the song that should now be playing on the playlist as determined by the nowPlayingIndex
  * @returns returns the Song object in the playlist that is currently playing otherwise null if the playlist is empty
@@ -55,6 +67,41 @@ Playlist.prototype.getNowPlaying = function(){
         return this.fullPlaylist[this.nowPlayingIndex];
     }
 
+}
+
+Playlist.prototype.getNowPlayingTime = function(){
+    var nowPlaying = this.getNowPlaying();
+    if(nowPlaying == null){
+        return null;
+    }else{
+        return nowPlaying.getTime();
+    }
+}
+
+Playlist.prototype.setNowPlayingTime = function(timeInSeconds){
+    var nowPlaying = this.getNowPlaying();
+    if(nowPlaying == null){
+        return null;
+    }else{
+        nowPlaying.setTime(timeInSeconds);
+    }
+}
+
+Playlist.prototype.updateNowPlayingTime = function(){
+
+    var currentTime = this.getNowPlayingTime();
+    if(currentTime == null){
+        currentTime = 0;
+    }
+
+    var json = {
+        "session_token" : this.sessionToken,
+        "currently_playing": this.nowPlayingIndex,
+        "currently_playing_time": currentTime
+    };
+
+    var url = "/api/playlist/update/current/time";
+    this.updateServer(url,json);
 }
 /**
  * getUpNext returns an array of Song objects of the songs next to be played in the playlist, in the order that they

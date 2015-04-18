@@ -215,4 +215,20 @@ class YoutubeController extends BaseController {
             'data' => $json
         ));
     }
+
+    public function AJAXUpdateTime(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        $userData = User::where('session_token', '=', $json->session_token)->first();
+        $userData->host_time = $json->currently_playing_time;
+        $userData->save();
+
+        return Response::json(array(
+            'success' => true,
+            'session_token' => $json->session_token,
+            'host_time' => $json->currently_playing_time
+        ));
+
+    }
 }

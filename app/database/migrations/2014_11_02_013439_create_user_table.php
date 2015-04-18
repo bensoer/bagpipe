@@ -24,6 +24,8 @@ class CreateUserTable extends Migration {
             $table->string("session_token");
             $table->integer("currently_playing")->default(0);
             $table->integer("guests")->default(0);
+            $table->decimal("host_time",6,3)->default(0);
+            $table->boolean("double_playlist")->default(false);
             $table->timestamps();
 		});
 

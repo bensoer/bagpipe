@@ -1,13 +1,14 @@
 
 //class attributes
 Song.prototype.voteCount = 0;
+Song.prototype.timeInSeconds = 0;
 
 //constructor
 /**
  * Song is an object containing all data required to access and use Youtube songs by the youtube player and the UI
  * presented to the user on the bagpipe website
  * @param songName - the name/title of the song - used for all text representations of the song
- * @param songID - the Youtbue ID of the song - used by the player to play the appropriate song
+ * @param songID - the Youtube ID of the song - used by the player to play the appropriate song
  * @constructor
  */
 function Song(songName, songID){
@@ -69,4 +70,11 @@ Song.prototype.incrementVoteCount = function(){
  */
 Song.prototype.decrementVoteCount = function(){
     --this.voteCount;
+}
+
+Song.prototype.setTime = function(timeInSeconds){
+    this.timeInSeconds = timeInSeconds;
+}
+Song.prototype.getTime = function(){
+    return this.timeInSeconds;
 }

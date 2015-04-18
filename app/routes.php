@@ -105,4 +105,8 @@ Route::post('/api/playlist/delete/guest', [
     'as' => 'decrementGuest',
     'uses' => 'YoutubeController@AJAXDecrementGuest'
 ]);
+Route::post('/api/playlist/update/current/time', [
+    'as' => 'setTime',
+    'uses' => 'YoutubeController@AJAXUpdateTime'
+]);
 
