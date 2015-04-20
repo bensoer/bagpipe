@@ -1,32 +1,144 @@
 
 
 var rate = 3 * 1000;
-window.setInterval(getCurrentlyPlaying, rate);
+/*window.setInterval(getCurrentlyPlaying, rate);
 window.setTimeout(getCurrentlyPlaying,0);
 window.setTimeout(getUpNext,0);
-window.setInterval(getUpNext, rate);
+window.setInterval(getUpNext, rate);*/
+
+window.setInterval(updateDisplayLists, rate);
+window.setTimeout(updateDisplayLists, 0);
 var alreadyVoted = new Array();
 
 var token = document.getElementById('session_token').innerHTML;
 var playlist = new Playlist(5*1000, token );
 playlist.updateArray();
 
+var doublePlaylistEnabled = false;
+
+/* Build Youtube Player */
+
+
+// 2. This code loads the IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+//tag.src = "http://www.youtube.com/apiplayer?enablejsapi=1&version=3";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+
+
+// 3. This function creates an <iframe> (and YouTube player)
+//    after the API code downloads.
+var player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '90',
+        width: '120',
+        playerVars: {
+            controls:0,
+            showinfo:0,
+            modestbranding:1,
+            iv_load_policy:3
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+/** Called by The Youtube Player is ready **/
+function onPlayerReady(event) {
+
+    var nowPlaying = playlist.getNowPlaying();
+
+    if(nowPlaying == null){
+        //document.getElementById('label').innerHTML = "You have not added anything to your playlist yet...";
+    }else{
+        updateDisplayLists();
+        if(playlist.isDoublePlaylist()){
+            //alert("is a double playlist");
+  //          player.loadVideoById({videoId:nowPlaying.getID()});
+            //alert("moving to time: " + nowPlaying.getTime());
+  //          player.seekTo(nowPlaying.getTime(), false);
+  //          player.playVideo();
+
+            doublePlaylistEnabled = true;
+        }else{
+            player.pauseVideo();
+        }
+
+    }
+}
+
+// 5. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+/** called when the Youtube Player has had an event occur **/
+function onPlayerStateChange(event) {
+
+    if (event.data == YT.PlayerState.ENDED) {
+        //document.getElementById("play").className = "glyphicon glyphicon-play";
+
+        var nextSong = playlist.getNextSong();
+
+        if (nextSong == null) {
+            //once played all the videos should we stop or replay ??
+        } else {
+            updateDisplayLists();
+            player.loadVideoById({videoId: nextSong.getID()});
+            player.playVideo();
+        }
+
+    }
+}
+
+/* --                       --                      --              -- */
+
 
 function getCurrentlyPlaying(){
     var song = playlist.getNowPlaying();
+    var song = playlist.getNowPlaying();
 
-    //alert(song);
-    if(song != null){
-        var lbl = document.getElementById("label");
-        lbl.innerHTML = "";
+    var label = document.getElementById("now-playing-label");
+    var youtubeLabel = document.getElementById("youtube-label");
 
-        var link = document.createElement("a");
-        link.href= "https://www.youtube.com/watch?v=" + song.getID();
-        link.target = "_blank";
-        link.innerHTML = song.getName();
+    var playerDiv = document.getElementById("player");
 
-        lbl.appendChild(link);
+    if(playlist.isDoublePlaylist()){
+        //alert("Double Playlist Detected");
+
+        if(!doublePlaylistEnabled){
+            label.style.display = "none";
+            addYoutubePlayer();
+        }
+
+        //update the song label
+        youtubeLabel.innerHTML = playlist.getNowPlaying().getName();
+
+    }else{
+        //alert("No Double Playlist Detected");
+        label.style.display = "block";
+        removeYoutubePlayer();
+
+
+        //alert(playlist.doublePlaylist);
+        //alert(song);
+        if(song != null){
+            var lbl = document.getElementById("label");
+            lbl.innerHTML = "";
+
+            var link = document.createElement("a");
+            link.href= "https://www.youtube.com/watch?v=" + song.getID();
+            link.target = "_blank";
+            link.innerHTML = song.getName();
+
+            lbl.appendChild(link);
+        }
     }
+
 
 /*
     var token = document.getElementById("session_token");
@@ -54,6 +166,34 @@ function getCurrentlyPlaying(){
 
     });
 */
+}
+
+function removeYoutubePlayer(){
+    player.pauseVideo();
+    var playerModule = document.getElementById("player-module");
+    playerModule.style.display = "none";
+
+}
+
+function addYoutubePlayer(){
+
+    while(!playlist.arrayUpdated){
+        //wait for the response
+    }
+    //make the player visible and then start the current song
+    var playerModule = document.getElementById("player-module");
+    playerModule.style.display = "block";
+
+    var nowPlaying = playlist.getNowPlaying();
+
+    alert("adding youtube player. moving to time: " + nowPlaying.getTime());
+
+    player.loadVideoById({videoId:nowPlaying.getID()});
+    player.pauseVideo();
+    player.seekTo(nowPlaying.getTime(), false);
+    player.playVideo();
+
+
 }
 
 function getUpNext(){
@@ -194,7 +334,8 @@ function getUpNext(){
  */
 function updateDisplayLists(){
     if(!playlist.isEmpty()){
-        document.getElementById('label').innerHTML = playlist.getNowPlaying().getName();
+        //document.getElementById('label').innerHTML = playlist.getNowPlaying().getName();
+        getCurrentlyPlaying();
         getUpNext();
     }
 

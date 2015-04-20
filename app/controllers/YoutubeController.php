@@ -168,7 +168,7 @@ class YoutubeController extends BaseController {
         $json = json_decode($inputData);
 
         $songData = Song::getPlaylist($json->session_token);
-        $userData = User::where(array('session_token' => $json->session_token))->select('currently_playing')->get();
+        $userData = User::where(array('session_token' => $json->session_token))->first();
 
         if(empty($songData)){
             return Response::json(array(
@@ -183,7 +183,9 @@ class YoutubeController extends BaseController {
                 'session_token' => $json->session_token,
                 'song_list' => $songData,
                 'song_list_length' => count($songData),
-                'currently_playing' => $userData[0]->currently_playing
+                'currently_playing' => $userData->currently_playing,
+                'currently_playing_time' => $userData->host_time,
+                'double_playlist_enabled' => $userData->double_playlist
             ));
         }
     }
@@ -230,5 +232,19 @@ class YoutubeController extends BaseController {
             'host_time' => $json->currently_playing_time
         ));
 
+    }
+
+    public function AJAXToggleDoublePlaylist(){
+        $inputData = Input::get('formData');
+        $json = json_decode($inputData);
+
+        $userData = User::where('session_token','=', $json->session_token)->first();
+        $userData->double_playlist = $json->double_playlist;
+        $userData->save();
+
+        return Response::json(array(
+            'success' => true,
+            'session_token' => $json->session_token
+        ));
     }
 }

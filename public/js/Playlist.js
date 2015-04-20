@@ -41,16 +41,32 @@ Playlist.prototype.toggleVideoLoop = function(){
     }
 }
 
-Playlist.prototype.toggleDoublePlaylist = function(){
-    if(this.doublePlaylist){
-        this.doublePlaylist = false;
-    }else{
-        this.doublePlaylist = true;
-    }
+Playlist.prototype.toggleDoublePlaylist = function(state, callback){
+    this.allowedToUpdate = false;
+    var _this = this;
+
+    this.doublePlaylist = state;
 
     //tell the server about the change
+    var json = {
+        "session_token": this.sessionToken,
+        "double_playlist": this.doublePlaylist
+    };
+    var url = "/api/playlist/double";
 
+    alert("telling server: " + JSON.stringify(json));
 
+    var response = this.updateServer(url, json);
+
+    response.done(function(entity){
+        callback();
+        _this.allowedToUpdate = true;
+    })
+
+}
+
+Playlist.prototype.isDoublePlaylist = function(){
+    return this.doublePlaylist;
 }
 
 /**
@@ -297,6 +313,7 @@ Playlist.prototype.updateArray = function(){
 
     //if not allowed to update don't attempt to update
     if(this.allowedToUpdate == false){
+        alert("not allowed");
         return;
     }
 
@@ -316,8 +333,9 @@ Playlist.prototype.updateArray = function(){
     response.done(function(entity){
         //if change call succeeded and your allowed to update
         if(entity.success && _this.allowedToUpdate == true){
-            //alert("RESPONSE: \n" + JSON.stringify(entity));
+            alert("RESPONSE: \n" + JSON.stringify(entity));
 
+            _this.doublePlaylist = entity.double_playlist_enabled;
             _this.nowPlayingIndex = entity.currently_playing;
             _this.fullPlaylist = new Array();
             //alert("playlist rebuild: " + _this.fullPlaylist);
@@ -327,8 +345,14 @@ Playlist.prototype.updateArray = function(){
                 _this.fullPlaylist.push(song);
                 //alert("playlist is now: " + _this.fullPlaylist);
             }
-            _this.arrayUpdated = true;
+
             //alert("playlist after build: " + JSON.stringify(_this.fullPlaylist));
+
+            var nowPlaying = _this.getNowPlaying();
+            alert("Currently Playing Time: " + entity.currently_playing_time);
+            nowPlaying.setTime(entity.currently_playing_time);
+
+            _this.arrayUpdated = true;
 
         }
     })

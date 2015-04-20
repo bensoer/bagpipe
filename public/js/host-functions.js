@@ -141,7 +141,16 @@ function updateServerNowPlayingTime(){
 }
 
 function toggleDoublePlaylist(){
-    alert("HIT");
+
+    //disable the checkbox so that it can't be spammed potentially
+    //causing the server to be set backwards to the button
+
+    var checkbox = document.getElementById("enable_double_playlist");
+    checkbox.disabled = true;
+
+    playlist.toggleDoublePlaylist(checkbox.checked , function(){
+        checkbox.disabled = false;
+    });
 }
 
 /**

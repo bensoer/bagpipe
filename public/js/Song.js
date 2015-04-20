@@ -72,8 +72,8 @@ Song.prototype.decrementVoteCount = function(){
     --this.voteCount;
 }
 
-Song.prototype.setTime = function(timeInSeconds){
-    this.timeInSeconds = timeInSeconds;
+Song.prototype.setTime = function(seconds){
+    this.timeInSeconds = seconds;
 }
 Song.prototype.getTime = function(){
     return this.timeInSeconds;

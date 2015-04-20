@@ -57,10 +57,28 @@
 <!-- Currently playing -->
 <div id="current-song">
     <div class="row">
-        <div class="col-lg-12 text-center">
+
+        <div class="form-group prev_next" id="player-module">
+            <!-- JavaScript loaded now playing list -->
+            <div class="col-lg-12">
+                <div class="media">
+                    <div class="media-left">
+                        <!-- Youtube player module -->
+                        <div id="player"></div>
+                    </div>
+
+
+                    <div class="media-body media-middle">
+                        <span id="youtube-label" class="media-heading">Some Generic Text</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-12 text-center" id="now-playing-label">
             <div class="col-lg-12 center-block">
                  <div class="form-group prev_next">
-
                         <h2>Now Playing</h2>
                         <!-- JavaScript  and PHP loaded now playing list -->
                         <p id="label">
@@ -70,10 +88,11 @@
                                <?php $songlist = $data['songlist']; echo $songlist[0]->songname ?>
                             </a>
                         </p>
-
                  </div>
              </div>
          </div>
+
+
     </div>
 </div>
 

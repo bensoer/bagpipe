@@ -109,4 +109,8 @@ Route::post('/api/playlist/update/current/time', [
     'as' => 'setTime',
     'uses' => 'YoutubeController@AJAXUpdateTime'
 ]);
+Route::post('/api/playlist/double', [
+    'as' => 'toggleDoublePlaylist',
+    'uses' => 'YoutubeController@AJAXToggleDoublePlaylist'
+]);
 
