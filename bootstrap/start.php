@@ -27,7 +27,7 @@ $app = new Illuminate\Foundation\Application;
 $env = $app->detectEnvironment(array(
 
     'production' => array('zealous-briars'),
-    'local' => array('APACHESERV', 'homestead', '.local'),
+    'local' => array('APACHESERV', 'homestead', '.local', 'ironhide'),
 
 ));
 
