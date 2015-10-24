@@ -12,21 +12,24 @@ class YoutubeController extends BaseController {
         return new Madcoda\Youtube(array('key' => self::API_KEY));
     }
 
+
+
     /** search route submitting user search criteria and returning result data
      * @return mixed
      */
     public function AJAXSearch(){
-        $inputData = Input::get('formData');
-        parse_str($inputData, $formFields);
 
-        $search = $formFields['search'];
+        $input = $this->parseJsonInput();
+
+        $search = $input->search;
 
         $results = $this->searchForVideos($search);
         //$results = 0;
 
         return Response::json(array(
             'success' => true,
-            'data' => $results
+            'data' => $results,
+            'other' => $input
         ));
     }
 
@@ -55,6 +58,7 @@ class YoutubeController extends BaseController {
         return $videos;
     }
 
+//MOVED TO SESSION CONTROLLER
     /** updates the current song for the specified session. This is to keep other clients up to date with the currently
      * running song and to enforce validation if they are behind in updating before making a change (validation is
      * not yet implemented)
@@ -77,6 +81,7 @@ class YoutubeController extends BaseController {
 
     }
 
+//MOVED TO SONG CONTROLLER
     /** submits a vote for a song, changing the order of the playlist based on the newly added vote. The ordering is
      * sorted on the client side and then passed to the server to implement and update all other clients
      * @return mixed
@@ -105,6 +110,7 @@ class YoutubeController extends BaseController {
         ));
     }
 
+ //MOVED TO SONG CONTROLLER
     /** deletes the passed song from the playlist belonging to the specified session
      * @return mixed
      */
@@ -131,6 +137,7 @@ class YoutubeController extends BaseController {
 
     }
 
+//MOVED TO SONG CONTROLLER
     /**  adds the passed song to the playlist belonging to the specified session
      * @return mixed
      */
@@ -160,6 +167,7 @@ class YoutubeController extends BaseController {
         ));
     }
 
+//MOVED TO SESSION CONTROLLER
     /** the core synchronization method. This method returns a copy of the playlist belonging to the session so as to
      * update a user to changes
      * @return mixed
@@ -191,6 +199,7 @@ class YoutubeController extends BaseController {
         }
     }
 
+//MOVED TO SESSION CONTROLLER
     /** unloads the DB data associated with the passed in session. This method is triggered everytime the host user
      * refreshes thier page as it is the reset point for the playlist
      * @return mixed
@@ -208,6 +217,7 @@ class YoutubeController extends BaseController {
 
     }
 
+//MOVED TO ANALYTICS CONTROLLER
     public function AJAXDecrementGuest(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
@@ -219,6 +229,7 @@ class YoutubeController extends BaseController {
         ));
     }
 
+//MOVED TO SESSION CONTROLLER
     public function AJAXUpdateTime(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);
@@ -235,6 +246,7 @@ class YoutubeController extends BaseController {
 
     }
 
+//MOVED TO SESSION CONTROLLER
     public function AJAXToggleDoublePlaylist(){
         $inputData = Input::get('formData');
         $json = json_decode($inputData);

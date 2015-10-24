@@ -246,7 +246,7 @@ $("#searchSong").submit(function(event){
     url = "/api/search";
 
 
-    var posting = $.post( url, { formData: data } );
+    var posting = $.post( url, data );
 
     posting.done(function(results){
         if(results.success){

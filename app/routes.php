@@ -78,39 +78,39 @@ Route::any('/api/search',[
     'uses' => 'YoutubeController@AJAXSearch'
 ]);
 Route::post('/api/playlist/add', [
-    'as' => 'updateSongs',
-    'uses' => 'YoutubeController@AJAXAddSongs'
+    'as' => 'addSongs',
+    'uses' => 'SongController@AddSongs'
 ]);
 Route::post('/api/playlist/delete', [
     'as' => 'unloadDBSession',
-    'uses' => 'YoutubeController@AJAXUnloadDBSession'
+    'uses' => 'SessionController@UnloadDBSession'
 ]);
 Route::post('/api/playlist/update/current', [
-    'as' => 'updateCuurent',
-    'uses' => 'YoutubeController@AJAXUpdateCurrentSong'
+    'as' => 'updateCurrent',
+    'uses' => 'SessionController@UpdateCurrentSong'
 ]);
 Route::post('/api/playlist', [
     'as' => 'getArrays',
-    'uses' => 'YoutubeController@AJAXGetArrays'
+    'uses' => 'SessionController@GetArrays'
 ]);
 Route::post('/api/playlist/vote', [
     'as' => 'submitVote',
-    'uses' => 'YoutubeController@AJAXSubmitVote'
+    'uses' => 'SongController@VoteSong'
 ]);
 Route::post('/api/playlist/song/delete' , [
     'as' => 'deleteSong',
-    'uses' => 'YoutubeController@AJAXDeleteSong'
+    'uses' => 'SongController@DeleteSong'
 ]);
 Route::post('/api/playlist/delete/guest', [
     'as' => 'decrementGuest',
-    'uses' => 'YoutubeController@AJAXDecrementGuest'
+    'uses' => 'AnalyticsController@DecrementGuest'
 ]);
 Route::post('/api/playlist/update/current/time', [
     'as' => 'setTime',
-    'uses' => 'YoutubeController@AJAXUpdateTime'
+    'uses' => 'SessionController@UpdateTime'
 ]);
 Route::post('/api/playlist/double', [
     'as' => 'toggleDoublePlaylist',
-    'uses' => 'YoutubeController@AJAXToggleDoublePlaylist'
+    'uses' => 'SessionController@ToggleDoublePlaylist'
 ]);
 

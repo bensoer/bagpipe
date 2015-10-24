@@ -300,7 +300,14 @@ Playlist.prototype.updateServer = function(url, json){
     var data = JSON.stringify(json);
     //alert("Update Server - SENDING: \n" + data);
 
-    return $.post(url, {formData: data});
+    //return $.post(url, {formData: data});
+    //return $.post(url, data);
+
+    return $.ajax(url, {
+        data : data,
+        contentType : 'application/json',
+        type: 'POST'
+    });
 }
 
 /**

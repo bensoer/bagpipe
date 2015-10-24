@@ -15,4 +15,17 @@ class BaseController extends Controller {
 		}
 	}
 
+	protected function parseJsonInput(){
+
+		if(Request::ajax()){
+
+			//this is dodgy and doesn't work with $.post in jQuery
+			return json_decode(json_encode(Input::all()));
+		}else{
+			return Input::json()->all();
+		}
+
+
+	}
+
 }
