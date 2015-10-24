@@ -48,12 +48,16 @@
     <![endif]-->
 
     <!-- jQuery -->
-        <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/jquery.js') }}"></script>
 
+    <script src="{{ asset('js/plugins/brain-socket-js/lib/brain-socket.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/brain-socket-js/lib/BrainSocket.js') }}"></script>
+    <script src="{{ asset('js/plugins/brain-socket-js/lib/BrainSocketPubSub.js') }}"></script>
 
 
     <script src="{{ asset('js/Playlist.js') }}"></script>
     <script src="{{ asset('js/Song.js') }}"></script>
+
 
 
 </head>

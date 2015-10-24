@@ -364,3 +364,33 @@ $(window).bind('unload', function(){
     });
 
 
+window.app = {};
+
+app.BrainSocket = new BrainSocket(
+    new WebSocket('ws://bagpipe.local:8080'),
+    new BrainSocketPubSub()
+);
+
+//some liteners
+app.BrainSocket.Event.listen('my.listener',function(msg)
+{
+    console.log("My Listener was triggered!");
+    console.log(msg);
+});
+
+app.BrainSocket.Event.listen('app.success',function(msg)
+{
+    console.log(msg);
+});
+
+app.BrainSocket.Event.listen('app.error',function(msg)
+{
+    console.log(msg);
+});
+window.setTimeout(function(){
+
+    //fire a message
+    app.BrainSocket.message('generic.event', { 'message': "HELLO", user_id : 6});
+
+
+}, 3*1000);

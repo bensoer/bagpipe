@@ -122,6 +122,7 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
+		'BrainSocket\BrainSocketServiceProvider',
 
 	),
 
@@ -189,7 +190,8 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
-        'Youtube' => 'Madcoda\Youtube',
+        'Youtube'         => 'Madcoda\Youtube',
+		'BrainSocket'     => 'BrainSocket\BrainSocketFacade'
 
 	),
 
