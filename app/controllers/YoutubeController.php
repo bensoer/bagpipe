@@ -22,6 +22,7 @@ class YoutubeController extends BaseController {
         $search = $formFields['search'];
 
         $results = $this->searchForVideos($search);
+        //$results = 0;
 
         return Response::json(array(
             'success' => true,

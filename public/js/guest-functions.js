@@ -95,11 +95,22 @@ function onPlayerStateChange(event) {
     }
 }
 
+function playNextSong(){
+    var nextSong = playlist.getNextSong();
+    if(nextSong == null){
+
+    }else{
+        updateDisplayLists();
+        player.loadVideoById({videoID: nextSong.getID()});
+        player.playVideo();
+    }
+}
+
 /* --                       --                      --              -- */
 
 
 function getCurrentlyPlaying(){
-    var song = playlist.getNowPlaying();
+    //var song = playlist.getNowPlaying();
     var song = playlist.getNowPlaying();
 
     var label = document.getElementById("now-playing-label");
@@ -107,21 +118,36 @@ function getCurrentlyPlaying(){
 
     var playerDiv = document.getElementById("player");
 
+
+    //this is the controller when double playlist is enabled / disabled part way through playing
     if(playlist.isDoublePlaylist()){
         //alert("Double Playlist Detected");
 
         if(!doublePlaylistEnabled){
             label.style.display = "none";
             addYoutubePlayer();
+            doublePlaylistEnabled = true;
         }
 
-        //update the song label
-        youtubeLabel.innerHTML = playlist.getNowPlaying().getName();
+
+        var totalSongLength = player.getDuration();
+        var currentSongTime = player.getCurrentTime();
+
+        //if there is less then or equal to 10 seconds different, wait it out
+        if(totalSongLength - currentSongTime <= 10){
+
+        }else{
+            //update the song label
+            youtubeLabel.innerHTML = playlist.getNowPlaying().getName();
+
+        }
+
 
     }else{
         //alert("No Double Playlist Detected");
         label.style.display = "block";
         removeYoutubePlayer();
+        doublePlaylistEnabled = false;
 
 
         //alert(playlist.doublePlaylist);
@@ -138,6 +164,9 @@ function getCurrentlyPlaying(){
             lbl.appendChild(link);
         }
     }
+
+    var loader = document.getElementById("loading-placeholder");
+    loader.style.display = "none";
 
 
 /*

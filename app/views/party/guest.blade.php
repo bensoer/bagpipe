@@ -58,7 +58,11 @@
 <div id="current-song">
     <div class="row">
 
-        <div class="form-group prev_next" id="player-module">
+        <div class="col-lg-12 text-center" id="loading-placeholder">
+            <span class="media-heading">Loading Player Configuration</span>
+        </div>
+
+        <div class="form-group prev_next" id="player-module" style="display:none;">
             <!-- JavaScript loaded now playing list -->
             <div class="col-lg-12">
                 <div class="media">
@@ -76,7 +80,7 @@
         </div>
 
 
-        <div class="col-lg-12 text-center" id="now-playing-label">
+        <div class="col-lg-12 text-center" id="now-playing-label" style="display:none;">
             <div class="col-lg-12 center-block">
                  <div class="form-group prev_next">
                         <h2>Now Playing</h2>
